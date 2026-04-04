@@ -14098,18 +14098,6 @@ Swap:          2.0Gi       852Ki       2.0Gi</code></pre>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Road map:</p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="Homework-2-ECON-662">Homework 2 ECON 662<a class="anchor-link" href="#Homework-2-ECON-662">&#182;</a></h1><p>Group Member:</p>
 <p>Xuyuan Zhang</p>
 <p>Paola Villa Paro</p>
@@ -14125,7 +14113,7 @@ Swap:          2.0Gi       852Ki       2.0Gi</code></pre>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="State-Transition-Matrix-and-State-Space">State Transition Matrix and State Space<a class="anchor-link" href="#State-Transition-Matrix-and-State-Space">&#182;</a></h3><p>Here I want to consider the detailed information on the dynamic question</p>
+<h2 id="State-Transition-Matrix-and-State-Space">State Transition Matrix and State Space<a class="anchor-link" href="#State-Transition-Matrix-and-State-Space">&#182;</a></h2><p>Here I want to consider the detailed information on the dynamic question</p>
 <p>The state space is given by $s = (x, rc)$ where $x \in \{1, \ldots, 7\}$ and $rc$ is the replacement cost. Action space $a = \{0, 1\}$ denoting replacing or not replacing. In solving, we denote $G$ RC points, then the total number of states is given by $S = 7G$.</p>
 $$
 RC_t = \rho_0 + \rho_1 RC_{t-1} + e_t
@@ -14221,7 +14209,7 @@ $$<p>and the numerical expression ig: $EV^{k} = T_\theta(EV^{k-1})$. By the Bana
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Hotz-Miller-Inversion">Hotz-Miller Inversion<a class="anchor-link" href="#Hotz-Miller-Inversion">&#182;</a></h3><p>Based on the Bellman Equation and we can write it using the CCP condition as:</p>
+<h2 id="Hotz-Miller-Inversion">Hotz-Miller Inversion<a class="anchor-link" href="#Hotz-Miller-Inversion">&#182;</a></h2><p>Based on the Bellman Equation and we can write it using the CCP condition as:</p>
 $$
 V(s) = \sum_{a \in \{0, 1\}} P(a \mid s) [\bar{u}(a, s) + \beta \sum_{s^\prime} F_a(s, s^\prime) V(s^\prime)] + \sum_{a \in \{0, 1\}} P(a \mid s) \mathbb{E}[\varepsilon_a \mid a \text{ chosen } s].
 $$<p>Under the Type-1 extreme value assumption we have:</p>
@@ -14965,7 +14953,7 @@ $$<h3 id="Comparision-between-(C.-1)-and-(C.-2)$-methods:">Comparision between (
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Notes-for-the-Part-(c)">Notes for the Part (c)<a class="anchor-link" href="#Notes-for-the-Part-(c)">&#182;</a></h2><p>The current estimation is using the heavily nested for loop and this is very slow for the python operation and I think to make the estimation faster, the best approach is to use C++ or parallel program or using the CUDA to optimize the operation. Apparently, we currently don't have enough time to optimize the code. But the overall structure of this code can still produce a consistent estimator.</p>
+<h3 id="Notes-for-the-Part-(c)">Notes for the Part (c)<a class="anchor-link" href="#Notes-for-the-Part-(c)">&#182;</a></h3><p>The current estimation is using the heavily nested for loop and this is very slow for the python operation and I think to make the estimation faster, the best approach is to use C++ or parallel program or using the CUDA to optimize the operation. Apparently, we currently don't have enough time to optimize the code. But the overall structure of this code can still produce a consistent estimator.</p>
 <p>I'm using a baseline result in this block</p>
 
 </div>
