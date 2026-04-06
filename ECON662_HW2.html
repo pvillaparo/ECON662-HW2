@@ -14064,44 +14064,13 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>system information:</p>
-
-<pre><code>=== OS AND KERNEL ===
-PRETTY_NAME="Zorin OS 18"
-6.17.0-19-generic
-
-=== CPU TOPOLOGY &amp; CACHES ===
-CPU(s):                                  8
-Model name:                              11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz
-Thread(s) per core:                      2
-Core(s) per socket:                      4
-Socket(s):                               1
-L1d cache:                               192 KiB (4 instances)
-L1i cache:                               128 KiB (4 instances)
-L2 cache:                                5 MiB (4 instances)
-L3 cache:                                8 MiB (1 instance)
-NUMA node(s):                            1
-NUMA node0 CPU(s):                       0-7
-
-=== MEMORY (RAM) ===
-               total        used        free      shared  buff/cache   available
-Mem:            15Gi       6.8Gi       1.1Gi       659Mi       8.6Gi       8.5Gi
-Swap:          2.0Gi       852Ki       2.0Gi</code></pre>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="Homework-2-ECON-662">Homework 2 ECON 662<a class="anchor-link" href="#Homework-2-ECON-662">&#182;</a></h1><p>Group Member:</p>
 <p>Xuyuan Zhang</p>
 <p>Paola Villa Paro</p>
 <p>Wulan Kencana</p>
+<p>We maintain the information on the github:</p>
+<p><a href="https://github.com/pvillaparo/ECON662-HW2">https://github.com/pvillaparo/ECON662-HW2</a></p>
+<p>We</p>
 
 </div>
 </div>
@@ -14261,6 +14230,46 @@ $$<p>Instead of repeatedly probing the objective numerically, the optimizer is g
 <p>I also revise the optimization to use a two-stage tolerance rule in NFXP. The first optimization stage solves the Bellman equation with a looser tolerance, and the second stage refines the estimate with a tighter tolerance. The main advantage is that the code does not waste time solving the Bellman equation very accurately at parameter values that are still far from the optimum. Early iterations are made cheap; only the final stage is made precise.</p>
 <p>In terms of the Hotz-Miller optimization, I use the LU factorization to solve the linear system, which is very common in optimization theory. Because the CCPs are fixed in the HM step, the coefficient matrix is fixed as well, so it can be factorized once and reused.</p>
 <p>Lastly, I also consider the smooth method in the code. Because I tried to increase $K = 8$ to $K = 50$ and I found that the estimation would fail because of the some of the states, there would be no samples drop in that place. Therefore, I consider a smooth method in the implementation of the code, and I found that the result is robust in terms of the $K$ number.</p>
+<p>In Paola's version, there is also an associated Tauchen's method in the estimation.</p>
+<p>Tauchen is needed when your grid changes with parameters —
+i.e., when the AR(1) parameters are inside the optimizer.
+Here, $\Pi$ is built from the <strong>data directly</strong> and is never recomputed.
+The grid is fixed, so no Tauchen formula is needed.</p>
+<table>
+<thead><tr>
+<th></th>
+<th>Empirical (this notebook)</th>
+<th>Tauchen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grid built from</td>
+<td>Data (bins)</td>
+<td>AR(1) theory</td>
+</tr>
+<tr>
+<td>$\Pi$ recomputed?</td>
+<td>Never</td>
+<td>Every optimizer call</td>
+</tr>
+<tr>
+<td>Params in optimizer</td>
+<td>2</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Empty-cell problem?</td>
+<td>Yes (rare states)</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Speed</td>
+<td>Fast</td>
+<td>Slower</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
@@ -14812,7 +14821,7 @@ message                = Optimization terminated successfully.
 loglike                = -33941.542312
 theta1_hat             = 0.412523
 theta2_hat             = 0.156883
-runtime_sec            = 0.0930
+runtime_sec            = 0.0822
 last_inner_iterations  = 1
 
 ============= Hotz-Miller results =============
@@ -14821,13 +14830,13 @@ message                = Optimization terminated successfully.
 loglike                = -33941.896863
 theta1_hat             = 0.411447
 theta2_hat             = 0.156677
-runtime_sec            = 0.0020
+runtime_sec            = 0.0015
 HM value solve         = direct linear solve
 
 ================ Summary table ================
          method  theta1_hat  theta2_hat  rho0_hat  rho1_hat  sigma_rho_hat       loglike  runtime_sec  state_space_S
-           NFXP    0.412523    0.156883   17.8269  0.624909       4.605933 -33941.542312     0.093020             56
-Hotz-Miller MLE    0.411447    0.156677   17.8269  0.624909       4.605933 -33941.896863     0.001969             56
+           NFXP    0.412523    0.156883   17.8269  0.624909       4.605933 -33941.542312     0.082240             56
+Hotz-Miller MLE    0.411447    0.156677   17.8269  0.624909       4.605933 -33941.896863     0.001535             56
 
 ================ Matrix-size report ================
                    object    shape  elements  approx_memory_MB
@@ -14942,6 +14951,13 @@ $$<p>So the estimator is</p>
 $$
 \hat{\theta}^{(2)} = \arg\max_\theta \ell^{(2)}(\theta)
 $$<h3 id="Comparision-between-(C.-1)-and-(C.-2)$-methods:">Comparision between (C. 1) and (C. 2)$ methods:<a class="anchor-link" href="#Comparision-between-(C.-1)-and-(C.-2)$-methods:">&#182;</a></h3><p>The two simulation procedures approximate the same policy value $V^{\hat{P}}(s; \theta)$. The selected shock is integrated out analytically in the (C. 1)$, so the simulated path uses only the deterministic utility component plus this correction term. In part (C. 2), the shocks are drawn explicitly and the action is selected using the implied threshold rule. Thus part (C.1) generally has lower simulation variance, while part (C.2) is closer to the original random-utility representation of the model. Both are valid implementations of the forward-simulation estimator described in part (C).</p>
+<p>The four step procedure can be considered as this:</p>
+<ol>
+<li>Estimate transition matrix : exogenous (RC, empirical counts) + endogenous (mileage)</li>
+<li>Estimate CCP $\hat{P}(a=j|s)$ from data (frequency estimator)</li>
+<li>For each guess of $\theta$: $V \leftarrow (\widehat{CCP},\,\theta)$ via HM inversion; get $P$ from $V$</li>
+<li>Calculate likelihood given current $\theta$</li>
+</ol>
 
 </div>
 </div>
@@ -14954,6 +14970,7 @@ $$<h3 id="Comparision-between-(C.-1)-and-(C.-2)$-methods:">Comparision between (
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Notes-for-the-Part-(c)">Notes for the Part (c)<a class="anchor-link" href="#Notes-for-the-Part-(c)">&#182;</a></h3><p>The current estimation is using the heavily nested for loop and this is very slow for the python operation and I think to make the estimation faster, the best approach is to use C++ or parallel program or using the CUDA to optimize the operation. Apparently, we currently don't have enough time to optimize the code. But the overall structure of this code can still produce a consistent estimator.</p>
+<p>Same as Part (a): we cut the observed RC range into $N_{RC}$ equal-width bins and represent each by its midpoint. The transition matrix $\Pi$ is built by counting empirical transitions in the data. This is fixed once and never recomputed during optimization, no parametric normal CDF, no re-evaluation at each optimizer call.</p>
 <p>I'm using a baseline result in this block</p>
 
 </div>
@@ -14967,320 +14984,329 @@ $$<h3 id="Comparision-between-(C.-1)-and-(C.-2)$-methods:">Comparision between (
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#  Part (c): Forward simulation estimators</span>
-<span class="c1"># Consider the simulation results</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Part (c): forward simulation estimators</span>
+<span class="c1">#</span>
+<span class="c1"># Key idea:</span>
+<span class="c1">#</span>
+<span class="c1">#   We exploit this by precomputing:</span>
+<span class="c1">#     maint_component[s] = E_sim[sum beta^t * x_t * 1{a_t=0} | s0=s]</span>
+<span class="c1">#     repl_component[s]  = E_sim[sum beta^t * rc_t * 1{a_t=1} | s0=s]</span>
+<span class="c1">#     corr_component[s]  = E_sim[sum beta^t * (gamma - log P_hat(a_t|s_t)) | s0=s]</span>
+<span class="c1">#</span>
+<span class="c1">#   for (c.1), and similarly:</span>
+<span class="c1">#     shock_component[s] = E_sim[sum beta^t * eps_{a_t,t} | s0=s]</span>
+<span class="c1">#</span>
+<span class="c1">#   for (c.2).</span>
+<span class="c1">#</span>
+<span class="c1">#   Then:</span>
+<span class="c1">#     V_hat^(1)(s;theta) = -theta1 * maint_c1[s] - theta2 * repl_c1[s] + corr_c1[s]</span>
+<span class="c1">#     V_hat^(2)(s;theta) = -theta1 * maint_c2[s] - theta2 * repl_c2[s] + shock_c2[s]</span>
+<span class="c1">#</span>
+<span class="c1">#   So the optimizer no longer re-simulates the path.</span>
 
+<span class="c1"># Simulation controls</span>
 <span class="n">Nsim_c1</span> <span class="o">=</span> <span class="mi">100</span>
-
-<span class="c1"># Use more draws for (c.2), because direct shock simulation has</span>
-<span class="c1"># much higher Monte Carlo variance than (c.1).</span>
 <span class="n">Nsim_c2</span> <span class="o">=</span> <span class="mi">200</span>
-
-<span class="c1"># consider with the 100 periods</span>
 <span class="n">Tsim</span> <span class="o">=</span> <span class="mi">100</span>
 
-<span class="c1"># Fixed seed for common random numbers.</span>
 <span class="n">sim_seed</span> <span class="o">=</span> <span class="mi">6622026</span>
 <span class="n">rng_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">sim_seed</span><span class="p">)</span>
 
-<span class="c1"># State helpers under your existing ordering:</span>
-<span class="c1">#    state = x_index * K + g_index</span>
-<span class="c1">#    with x_index in {0,...,6}, g_index in {0,...,K-1}</span>
-<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># State helpers and fixed first-stage objects</span>
 <span class="n">x_idx_of_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">),</span> <span class="n">K</span><span class="p">)</span>
 <span class="n">g_idx_of_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">),</span> <span class="mi">7</span><span class="p">)</span>
 
-<span class="c1"># First-stage CCP from your HM-style step-2 smoothing.</span>
-<span class="n">p1_policy</span> <span class="o">=</span> <span class="n">ccp_smooth</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">p0_policy</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">p1_policy</span>
-
-<span class="c1"># Log-odds of the first-stage CCP, needed for (c.2).</span>
-<span class="n">logit_policy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p1_policy</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p0_policy</span><span class="p">)</span>
-
-<span class="c1"># RC-grid transition CDF for inverse-CDF simulation.</span>
-<span class="n">Q_rc_cdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">Q_rc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">Q_rc_cdf</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
-
-<span class="c1"># Initial state matrices for vectorized simulation</span>
-<span class="c1">#    Row s corresponds to initial state s.</span>
-<span class="c1">#    Column r corresponds to simulation replication r.</span>
-
+<span class="c1"># Initial state matrices for vectorized simulation:</span>
+<span class="c1"># row s = initial state s, column r = replication r</span>
 <span class="n">x0_c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">x_idx_of_state</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Nsim_c1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">g0_c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">g_idx_of_state</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Nsim_c1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">x0_c2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">x_idx_of_state</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Nsim_c2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">g0_c2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">g_idx_of_state</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Nsim_c2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># Common Random Numbers</span>
+<span class="c1"># Fixed first-stage CCP from part (b)</span>
+<span class="n">p1_policy</span> <span class="o">=</span> <span class="n">ccp_smooth</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">p0_policy</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">p1_policy</span>
+<span class="n">logit_policy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p1_policy</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p0_policy</span><span class="p">)</span>
 
-<span class="c1"># ---------- (c.1): action uniforms and RC uniforms ----------</span>
+<span class="c1"># RC-grid transition CDF for inverse-CDF simulation</span>
+<span class="n">Q_rc_cdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">Q_rc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Q_rc_cdf</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="c1"># Positive x and rc values on the state grid</span>
+<span class="n">x_pos_vec</span> <span class="o">=</span> <span class="o">-</span><span class="n">u0_base_vec</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>   <span class="c1"># because u0_base_vec = -x</span>
+<span class="n">rc_pos_vec</span> <span class="o">=</span> <span class="o">-</span><span class="n">u1_base_vec</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># because u1_base_vec = -rc</span>
+
+<span class="c1"># Common random numbers</span>
+
+<span class="c1"># (c.1): action uniforms and RC uniforms</span>
 <span class="n">u_action_c1</span> <span class="o">=</span> <span class="n">rng_sim</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">Nsim_c1</span><span class="p">,</span> <span class="n">Tsim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-<span class="c1"># Use antithetic uniforms for the RC transitions as well.</span>
 <span class="n">half_c1</span> <span class="o">=</span> <span class="n">Nsim_c1</span> <span class="o">//</span> <span class="mi">2</span>
 <span class="n">u_rc_half_c1</span> <span class="o">=</span> <span class="n">rng_sim</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">half_c1</span><span class="p">,</span> <span class="n">Tsim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 <span class="n">u_rc_c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">u_rc_half_c1</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">u_rc_half_c1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="c1"># If Nsim_c1 is odd, append one extra column.</span>
 <span class="k">if</span> <span class="n">u_rc_c1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">Nsim_c1</span><span class="p">:</span>
     <span class="n">extra</span> <span class="o">=</span> <span class="n">rng_sim</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Tsim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">u_rc_c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">u_rc_c1</span><span class="p">,</span> <span class="n">extra</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># ---------- (c.2): antithetic Gumbel shocks and RC uniforms ----------</span>
+<span class="c1"># (c.2): explicit shocks and RC uniforms</span>
 <span class="n">half_c2</span> <span class="o">=</span> <span class="n">Nsim_c2</span> <span class="o">//</span> <span class="mi">2</span>
 
-<span class="c1"># Build antithetic uniforms, then transform to Type-I EV shocks.</span>
-<span class="c1"># Standard Type-I EV shock: eps = -log(-log(U)).</span>
 <span class="n">u0_half</span> <span class="o">=</span> <span class="n">rng_sim</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">half_c2</span><span class="p">,</span> <span class="n">Tsim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 <span class="n">u1_half</span> <span class="o">=</span> <span class="n">rng_sim</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">half_c2</span><span class="p">,</span> <span class="n">Tsim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
 <span class="n">u0_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">u0_half</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">u0_half</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">u1_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">u1_half</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">u1_half</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># Guard against exact 0 or 1 in the inverse transform.</span>
 <span class="n">u0_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">u0_full</span><span class="p">,</span> <span class="mf">1e-12</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">1e-12</span><span class="p">)</span>
 <span class="n">u1_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">u1_full</span><span class="p">,</span> <span class="mf">1e-12</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">1e-12</span><span class="p">)</span>
 
 <span class="n">eps0_c2</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">u0_full</span><span class="p">))</span>
 <span class="n">eps1_c2</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">u1_full</span><span class="p">))</span>
 
-<span class="c1"># Antithetic RC draws for (c.2)</span>
 <span class="n">u_rc_half_c2</span> <span class="o">=</span> <span class="n">rng_sim</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">half_c2</span><span class="p">,</span> <span class="n">Tsim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 <span class="n">u_rc_c2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">u_rc_half_c2</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">u_rc_half_c2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
 <span class="k">if</span> <span class="n">u_rc_c2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">Nsim_c2</span><span class="p">:</span>
     <span class="n">extra</span> <span class="o">=</span> <span class="n">rng_sim</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Tsim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">u_rc_c2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">u_rc_c2</span><span class="p">,</span> <span class="n">extra</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Vectorized RC-grid transition sampler</span>
-<span class="c1">#    Input:</span>
-<span class="c1">#      g_idx_mat : shape (S, R)</span>
-<span class="c1">#      u_mat     : shape (S, R)</span>
-<span class="c1">#    Output:</span>
-<span class="c1">#      next g    : shape (S, R)</span>
-
 <span class="k">def</span> <span class="nf">draw_next_rc_grid_mat</span><span class="p">(</span><span class="n">g_idx_mat</span><span class="p">,</span> <span class="n">u_mat</span><span class="p">):</span>
-    <span class="c1"># Q_rc_cdf[g_idx_mat] has shape (S, R, K)</span>
     <span class="n">cdf_rows</span> <span class="o">=</span> <span class="n">Q_rc_cdf</span><span class="p">[</span><span class="n">g_idx_mat</span><span class="p">]</span>
-
-    <span class="c1"># Count how many cumulative probabilities are below the draw.</span>
-    <span class="c1"># That count is exactly the sampled grid index.</span>
     <span class="n">g_next</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">u_mat</span><span class="p">[:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cdf_rows</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">g_next</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">K</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
 
-<span class="c1"># Fast simulator for (c.1)</span>
-<span class="c1">#    Only loop over time; states and replications are vectorized.</span>
-
-<span class="k">def</span> <span class="nf">simulate_value_c1_fast</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
-    <span class="c1"># Current states for all initial states and all replications.</span>
+<span class="c1"># Precompute simulation components for (c.1)</span>
+<span class="k">def</span> <span class="nf">precompute_components_c1</span><span class="p">():</span>
     <span class="n">x_idx</span> <span class="o">=</span> <span class="n">x0_c1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">g_idx</span> <span class="o">=</span> <span class="n">g0_c1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="c1"># Running return matrix: row = initial state, col = replication.</span>
-    <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">Nsim_c1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">maint_acc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">Nsim_c1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">repl_acc</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">Nsim_c1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">corr_acc</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">Nsim_c1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-    <span class="c1"># Discount factor beta^tau</span>
     <span class="n">discount</span> <span class="o">=</span> <span class="mf">1.0</span>
 
     <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Tsim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="c1"># Current state id for every (initial state, replication)</span>
         <span class="n">state_now</span> <span class="o">=</span> <span class="n">x_idx</span> <span class="o">*</span> <span class="n">K</span> <span class="o">+</span> <span class="n">g_idx</span>
 
-        <span class="c1"># First-stage CCP at the current state</span>
         <span class="n">p1_now</span> <span class="o">=</span> <span class="n">p1_policy</span><span class="p">[</span><span class="n">state_now</span><span class="p">]</span>
+        <span class="n">a1</span> <span class="o">=</span> <span class="p">(</span><span class="n">u_action_c1</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">tau</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">p1_now</span><span class="p">)</span>
+        <span class="n">a0</span> <span class="o">=</span> <span class="o">~</span><span class="n">a1</span>
 
-        <span class="c1"># Draw action from the estimated CCP</span>
-        <span class="n">a_now</span> <span class="o">=</span> <span class="p">(</span><span class="n">u_action_c1</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">tau</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">p1_now</span><span class="p">)</span>
+        <span class="n">p_selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">p1_now</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">p1_now</span><span class="p">)</span>
 
-        <span class="c1"># Chosen-action probability under the first-stage policy</span>
-        <span class="n">p_chosen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a_now</span><span class="p">,</span> <span class="n">p1_now</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">p1_now</span><span class="p">)</span>
-
-        <span class="c1"># Deterministic utility \bar{u}(s,a;theta)</span>
-        <span class="n">ubar_now</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-            <span class="n">a_now</span><span class="p">,</span>
-            <span class="n">theta2</span> <span class="o">*</span> <span class="n">u1_base_vec</span><span class="p">[</span><span class="n">state_now</span><span class="p">],</span>
-            <span class="n">theta1</span> <span class="o">*</span> <span class="n">u0_base_vec</span><span class="p">[</span><span class="n">state_now</span><span class="p">]</span>
-        <span class="p">)</span>
-
-        <span class="c1"># Eq. (5): \bar{u} + gamma - log P(a|s)</span>
-        <span class="n">G</span> <span class="o">+=</span> <span class="n">discount</span> <span class="o">*</span> <span class="p">(</span><span class="n">ubar_now</span> <span class="o">+</span> <span class="n">gamma_euler</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_chosen</span><span class="p">))</span>
+        <span class="n">maint_acc</span> <span class="o">+=</span> <span class="n">discount</span> <span class="o">*</span> <span class="n">x_pos_vec</span><span class="p">[</span><span class="n">state_now</span><span class="p">]</span> <span class="o">*</span> <span class="n">a0</span>
+        <span class="n">repl_acc</span>  <span class="o">+=</span> <span class="n">discount</span> <span class="o">*</span> <span class="n">rc_pos_vec</span><span class="p">[</span><span class="n">state_now</span><span class="p">]</span> <span class="o">*</span> <span class="n">a1</span>
+        <span class="n">corr_acc</span>  <span class="o">+=</span> <span class="n">discount</span> <span class="o">*</span> <span class="p">(</span><span class="n">gamma_euler</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_selected</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">tau</span> <span class="o">&lt;</span> <span class="n">Tsim</span><span class="p">:</span>
-            <span class="c1"># Mileage transition</span>
-            <span class="n">x_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a_now</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x_next_keep</span><span class="p">[</span><span class="n">x_idx</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
-
-            <span class="c1"># RC-grid transition</span>
+            <span class="n">x_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x_next_keep</span><span class="p">[</span><span class="n">x_idx</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
             <span class="n">g_idx</span> <span class="o">=</span> <span class="n">draw_next_rc_grid_mat</span><span class="p">(</span><span class="n">g_idx</span><span class="p">,</span> <span class="n">u_rc_c1</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">tau</span><span class="p">])</span>
-
             <span class="n">discount</span> <span class="o">*=</span> <span class="n">beta</span>
 
-    <span class="c1"># Average across replications to get V_hat(s;theta)</span>
-    <span class="k">return</span> <span class="n">G</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">maint_component</span> <span class="o">=</span> <span class="n">maint_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">repl_component</span>  <span class="o">=</span> <span class="n">repl_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">corr_component</span>  <span class="o">=</span> <span class="n">corr_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># Fast simulator for (c.2)</span>
-<span class="c1">#    Again only loop over time.</span>
+    <span class="k">return</span> <span class="n">maint_component</span><span class="p">,</span> <span class="n">repl_component</span><span class="p">,</span> <span class="n">corr_component</span>
 
-<span class="k">def</span> <span class="nf">simulate_value_c2_fast</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
-    <span class="c1"># Current states for all initial states and all replications.</span>
+<span class="c1"># Precompute simulation components for (c.2)</span>
+<span class="k">def</span> <span class="nf">precompute_components_c2</span><span class="p">():</span>
     <span class="n">x_idx</span> <span class="o">=</span> <span class="n">x0_c2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">g_idx</span> <span class="o">=</span> <span class="n">g0_c2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="c1"># Running return matrix</span>
-    <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">Nsim_c2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">maint_acc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">Nsim_c2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">repl_acc</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">Nsim_c2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">shock_acc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S</span><span class="p">,</span> <span class="n">Nsim_c2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-    <span class="c1"># Discount factor beta^tau</span>
     <span class="n">discount</span> <span class="o">=</span> <span class="mf">1.0</span>
 
     <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Tsim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="c1"># Current state id</span>
         <span class="n">state_now</span> <span class="o">=</span> <span class="n">x_idx</span> <span class="o">*</span> <span class="n">K</span> <span class="o">+</span> <span class="n">g_idx</span>
 
-        <span class="c1"># First-stage log-odds at the current state</span>
         <span class="n">logit_now</span> <span class="o">=</span> <span class="n">logit_policy</span><span class="p">[</span><span class="n">state_now</span><span class="p">]</span>
-
-        <span class="c1"># Direct Type-I EV shocks</span>
         <span class="n">e0_now</span> <span class="o">=</span> <span class="n">eps0_c2</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">tau</span><span class="p">]</span>
         <span class="n">e1_now</span> <span class="o">=</span> <span class="n">eps1_c2</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">tau</span><span class="p">]</span>
 
-        <span class="c1"># Eq. (6): choose action by the threshold rule</span>
-        <span class="n">a_now</span> <span class="o">=</span> <span class="p">(</span><span class="n">logit_now</span> <span class="o">+</span> <span class="n">e1_now</span> <span class="o">-</span> <span class="n">e0_now</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">a1</span> <span class="o">=</span> <span class="p">(</span><span class="n">logit_now</span> <span class="o">+</span> <span class="n">e1_now</span> <span class="o">-</span> <span class="n">e0_now</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">a0</span> <span class="o">=</span> <span class="o">~</span><span class="n">a1</span>
 
-        <span class="c1"># Deterministic utility \bar{u}(s,a;theta)</span>
-        <span class="n">ubar_now</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-            <span class="n">a_now</span><span class="p">,</span>
-            <span class="n">theta2</span> <span class="o">*</span> <span class="n">u1_base_vec</span><span class="p">[</span><span class="n">state_now</span><span class="p">],</span>
-            <span class="n">theta1</span> <span class="o">*</span> <span class="n">u0_base_vec</span><span class="p">[</span><span class="n">state_now</span><span class="p">]</span>
-        <span class="p">)</span>
+        <span class="n">eps_selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">e1_now</span><span class="p">,</span> <span class="n">e0_now</span><span class="p">)</span>
 
-        <span class="c1"># Selected shock epsilon_a</span>
-        <span class="n">eps_selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a_now</span><span class="p">,</span> <span class="n">e1_now</span><span class="p">,</span> <span class="n">e0_now</span><span class="p">)</span>
-
-        <span class="c1"># Eq. (7): \bar{u}(s,a;theta) + epsilon_a</span>
-        <span class="n">G</span> <span class="o">+=</span> <span class="n">discount</span> <span class="o">*</span> <span class="p">(</span><span class="n">ubar_now</span> <span class="o">+</span> <span class="n">eps_selected</span><span class="p">)</span>
+        <span class="n">maint_acc</span> <span class="o">+=</span> <span class="n">discount</span> <span class="o">*</span> <span class="n">x_pos_vec</span><span class="p">[</span><span class="n">state_now</span><span class="p">]</span> <span class="o">*</span> <span class="n">a0</span>
+        <span class="n">repl_acc</span>  <span class="o">+=</span> <span class="n">discount</span> <span class="o">*</span> <span class="n">rc_pos_vec</span><span class="p">[</span><span class="n">state_now</span><span class="p">]</span> <span class="o">*</span> <span class="n">a1</span>
+        <span class="n">shock_acc</span> <span class="o">+=</span> <span class="n">discount</span> <span class="o">*</span> <span class="n">eps_selected</span>
 
         <span class="k">if</span> <span class="n">tau</span> <span class="o">&lt;</span> <span class="n">Tsim</span><span class="p">:</span>
-            <span class="c1"># Mileage transition</span>
-            <span class="n">x_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a_now</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x_next_keep</span><span class="p">[</span><span class="n">x_idx</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
-
-            <span class="c1"># RC-grid transition</span>
+            <span class="n">x_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x_next_keep</span><span class="p">[</span><span class="n">x_idx</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
             <span class="n">g_idx</span> <span class="o">=</span> <span class="n">draw_next_rc_grid_mat</span><span class="p">(</span><span class="n">g_idx</span><span class="p">,</span> <span class="n">u_rc_c2</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">tau</span><span class="p">])</span>
-
             <span class="n">discount</span> <span class="o">*=</span> <span class="n">beta</span>
 
-    <span class="c1"># Average across replications to get V_hat(s;theta)</span>
-    <span class="k">return</span> <span class="n">G</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">maint_component</span> <span class="o">=</span> <span class="n">maint_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">repl_component</span>  <span class="o">=</span> <span class="n">repl_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">shock_component</span> <span class="o">=</span> <span class="n">shock_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># Objective functions</span>
-<span class="c1">#    Same state-level grouped log-likelihood as in your NFXP/HM code.</span>
+    <span class="k">return</span> <span class="n">maint_component</span><span class="p">,</span> <span class="n">repl_component</span><span class="p">,</span> <span class="n">shock_component</span>
 
-<span class="k">def</span> <span class="nf">sim_c1_objective_eta</span><span class="p">(</span><span class="n">eta</span><span class="p">):</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
-    <span class="n">theta1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">theta2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="c1"># Simulated value under the first-stage policy</span>
-    <span class="n">V_sim</span> <span class="o">=</span> <span class="n">simulate_value_c1_fast</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">)</span>
-
-    <span class="c1"># Recover EV_a(s;theta) through F0 and F1 and then form the</span>
-    <span class="c1"># structural CCP implied by theta and V_sim.</span>
-    <span class="n">p1_model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">choice_prob_from_V_flat</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">,</span> <span class="n">V_sim</span><span class="p">)</span>
-
-    <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N1_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p1_model</span><span class="p">)</span> <span class="o">+</span> <span class="n">N0_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p1_model</span><span class="p">))</span>
-    <span class="k">return</span> <span class="o">-</span><span class="n">ll</span>
-
-<span class="k">def</span> <span class="nf">sim_c2_objective_eta</span><span class="p">(</span><span class="n">eta</span><span class="p">):</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
-    <span class="n">theta1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">theta2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="n">V_sim</span> <span class="o">=</span> <span class="n">simulate_value_c2_fast</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">)</span>
-    <span class="n">p1_model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">choice_prob_from_V_flat</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">,</span> <span class="n">V_sim</span><span class="p">)</span>
-
-    <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N1_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p1_model</span><span class="p">)</span> <span class="o">+</span> <span class="n">N0_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p1_model</span><span class="p">))</span>
-    <span class="k">return</span> <span class="o">-</span><span class="n">ll</span>
-
-<span class="c1"># Estimate (c.1)</span>
-
-<span class="c1"># Start from HM for (c.1)</span>
-<span class="n">eta_start_c1</span> <span class="o">=</span> <span class="n">res_hm</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-<span class="c1"># Bounds on eta = log(theta)</span>
-<span class="n">eta_bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)]</span>
+<span class="c1"># One-time precomputation</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">maint_c1</span><span class="p">,</span> <span class="n">repl_c1</span><span class="p">,</span> <span class="n">corr_c1</span> <span class="o">=</span> <span class="n">precompute_components_c1</span><span class="p">()</span>
+<span class="n">time_precomp_c1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
 
 <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">maint_c2</span><span class="p">,</span> <span class="n">repl_c2</span><span class="p">,</span> <span class="n">shock_c2</span> <span class="o">=</span> <span class="n">precompute_components_c2</span><span class="p">()</span>
+<span class="n">time_precomp_c2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
 
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Precomputation for revised part (c):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_precomp_c1        = </span><span class="si">{</span><span class="n">time_precomp_c1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_precomp_c2        = </span><span class="si">{</span><span class="n">time_precomp_c2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Theta-to-value maps using precomputed components</span>
+<span class="k">def</span> <span class="nf">simulated_value_c1</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">theta1</span> <span class="o">*</span> <span class="n">maint_c1</span> <span class="o">-</span> <span class="n">theta2</span> <span class="o">*</span> <span class="n">repl_c1</span> <span class="o">+</span> <span class="n">corr_c1</span>
+
+<span class="k">def</span> <span class="nf">simulated_value_c2</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">theta1</span> <span class="o">*</span> <span class="n">maint_c2</span> <span class="o">-</span> <span class="n">theta2</span> <span class="o">*</span> <span class="n">repl_c2</span> <span class="o">+</span> <span class="n">shock_c2</span>
+
+<span class="c1"># Precompute exact derivatives of delta with respect to theta</span>
+<span class="c1">#</span>
+<span class="c1"># Since:</span>
+<span class="c1">#   V^(1)(theta) = -theta1 * maint_c1 - theta2 * repl_c1 + corr_c1</span>
+<span class="c1"># we have:</span>
+<span class="c1">#   dV^(1)/dtheta1 = -maint_c1</span>
+<span class="c1">#   dV^(1)/dtheta2 = -repl_c1</span>
+<span class="c1">#</span>
+<span class="c1"># and similarly for (c.2).</span>
+<span class="n">dDelta_c1_dtheta1</span> <span class="o">=</span> <span class="o">-</span><span class="n">u0_base_vec</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">Fdiff</span> <span class="o">@</span> <span class="n">maint_c1</span><span class="p">)</span>
+<span class="n">dDelta_c1_dtheta2</span> <span class="o">=</span>  <span class="n">u1_base_vec</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">Fdiff</span> <span class="o">@</span> <span class="n">repl_c1</span><span class="p">)</span>
+
+<span class="n">dDelta_c2_dtheta1</span> <span class="o">=</span> <span class="o">-</span><span class="n">u0_base_vec</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">Fdiff</span> <span class="o">@</span> <span class="n">maint_c2</span><span class="p">)</span>
+<span class="n">dDelta_c2_dtheta2</span> <span class="o">=</span>  <span class="n">u1_base_vec</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">Fdiff</span> <span class="o">@</span> <span class="n">repl_c2</span><span class="p">)</span>
+
+<span class="c1"># Exact objective and gradient for (c.1) and (c.2)</span>
+<span class="k">def</span> <span class="nf">sim_c1_objective_and_grad_eta</span><span class="p">(</span><span class="n">eta</span><span class="p">):</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+    <span class="n">theta1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">theta2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">V_sim</span> <span class="o">=</span> <span class="n">simulated_value_c1</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">)</span>
+    <span class="n">p1_model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">choice_prob_from_V_flat</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">,</span> <span class="n">V_sim</span><span class="p">)</span>
+
+    <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N1_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p1_model</span><span class="p">)</span> <span class="o">+</span> <span class="n">N0_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p1_model</span><span class="p">))</span>
+
+    <span class="n">score_weight</span> <span class="o">=</span> <span class="n">N1_vec</span> <span class="o">-</span> <span class="n">N_vec</span> <span class="o">*</span> <span class="n">p1_model</span>
+    <span class="n">score_theta1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">score_weight</span> <span class="o">*</span> <span class="n">dDelta_c1_dtheta1</span><span class="p">)</span>
+    <span class="n">score_theta2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">score_weight</span> <span class="o">*</span> <span class="n">dDelta_c1_dtheta2</span><span class="p">)</span>
+
+    <span class="n">grad_eta</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">score_theta1</span> <span class="o">*</span> <span class="n">theta1</span><span class="p">,</span>
+        <span class="n">score_theta2</span> <span class="o">*</span> <span class="n">theta2</span><span class="p">,</span>
+    <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="o">-</span><span class="n">ll</span><span class="p">,</span> <span class="n">grad_eta</span><span class="p">,</span> <span class="n">p1_model</span><span class="p">,</span> <span class="n">V_sim</span>
+
+<span class="k">def</span> <span class="nf">sim_c2_objective_and_grad_eta</span><span class="p">(</span><span class="n">eta</span><span class="p">):</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+    <span class="n">theta1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">theta2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">V_sim</span> <span class="o">=</span> <span class="n">simulated_value_c2</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">)</span>
+    <span class="n">p1_model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">choice_prob_from_V_flat</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">,</span> <span class="n">V_sim</span><span class="p">)</span>
+
+    <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N1_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p1_model</span><span class="p">)</span> <span class="o">+</span> <span class="n">N0_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p1_model</span><span class="p">))</span>
+
+    <span class="n">score_weight</span> <span class="o">=</span> <span class="n">N1_vec</span> <span class="o">-</span> <span class="n">N_vec</span> <span class="o">*</span> <span class="n">p1_model</span>
+    <span class="n">score_theta1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">score_weight</span> <span class="o">*</span> <span class="n">dDelta_c2_dtheta1</span><span class="p">)</span>
+    <span class="n">score_theta2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">score_weight</span> <span class="o">*</span> <span class="n">dDelta_c2_dtheta2</span><span class="p">)</span>
+
+    <span class="n">grad_eta</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">score_theta1</span> <span class="o">*</span> <span class="n">theta1</span><span class="p">,</span>
+        <span class="n">score_theta2</span> <span class="o">*</span> <span class="n">theta2</span><span class="p">,</span>
+    <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="o">-</span><span class="n">ll</span><span class="p">,</span> <span class="n">grad_eta</span><span class="p">,</span> <span class="n">p1_model</span><span class="p">,</span> <span class="n">V_sim</span>
+
+<span class="k">def</span> <span class="nf">sim_c1_fun</span><span class="p">(</span><span class="n">eta</span><span class="p">):</span>
+    <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sim_c1_objective_and_grad_eta</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span>
+
+<span class="k">def</span> <span class="nf">sim_c2_fun</span><span class="p">(</span><span class="n">eta</span><span class="p">):</span>
+    <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sim_c2_objective_and_grad_eta</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span>
+
+<span class="c1"># Estimate (c.1)</span>
+<span class="c1">#     Start from HM, as before, but now no repeated simulation.</span>
+<span class="n">eta_start_c1</span> <span class="o">=</span> <span class="n">res_hm</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
 <span class="n">res_c1</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
-    <span class="n">sim_c1_objective_eta</span><span class="p">,</span>
+    <span class="n">sim_c1_fun</span><span class="p">,</span>
     <span class="n">eta_start_c1</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">"L-BFGS-B"</span><span class="p">,</span>
-    <span class="n">bounds</span><span class="o">=</span><span class="n">eta_bounds</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"BFGS"</span><span class="p">,</span>
+    <span class="n">jac</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">options</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">"maxiter"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="s2">"ftol"</span><span class="p">:</span> <span class="mf">1e-10</span><span class="p">,</span>
-        <span class="s2">"eps"</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span>   <span class="c1"># finite-difference step for a smooth deterministic objective</span>
+        <span class="s2">"gtol"</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="s2">"maxiter"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
         <span class="s2">"disp"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">)</span>
-
-<span class="n">time_c1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="n">time_opt_c1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="n">time_c1_total</span> <span class="o">=</span> <span class="n">time_precomp_c1</span> <span class="o">+</span> <span class="n">time_opt_c1</span>
 
 <span class="n">theta_c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">res_c1</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-<span class="n">V_c1</span> <span class="o">=</span> <span class="n">simulate_value_c1_fast</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">theta_c1</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta_c1</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-<span class="n">p1_c1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">choice_prob_from_V_flat</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">theta_c1</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta_c1</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">V_c1</span><span class="p">)</span>
-<span class="n">ll_c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N1_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p1_c1</span><span class="p">)</span> <span class="o">+</span> <span class="n">N0_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p1_c1</span><span class="p">))</span>
+<span class="n">obj_c1</span><span class="p">,</span> <span class="n">grad_c1</span><span class="p">,</span> <span class="n">p1_c1</span><span class="p">,</span> <span class="n">V_c1</span> <span class="o">=</span> <span class="n">sim_c1_objective_and_grad_eta</span><span class="p">(</span><span class="n">res_c1</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="n">ll_c1</span> <span class="o">=</span> <span class="o">-</span><span class="n">obj_c1</span>
 
 <span class="c1"># Estimate (c.2)</span>
-
-<span class="c1"># Start (c.2) from the (c.1) estimate, not from HM.</span>
-<span class="c1"># Since (c.2) is noisier, this materially improves convergence.</span>
+<span class="c1">#     Start from (c.1), as before, but now no repeated simulation.</span>
 <span class="n">eta_start_c2</span> <span class="o">=</span> <span class="n">res_c1</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-
 <span class="n">res_c2</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
-    <span class="n">sim_c2_objective_eta</span><span class="p">,</span>
+    <span class="n">sim_c2_fun</span><span class="p">,</span>
     <span class="n">eta_start_c2</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">"L-BFGS-B"</span><span class="p">,</span>
-    <span class="n">bounds</span><span class="o">=</span><span class="n">eta_bounds</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"BFGS"</span><span class="p">,</span>
+    <span class="n">jac</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">options</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">"maxiter"</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
-        <span class="s2">"ftol"</span><span class="p">:</span> <span class="mf">1e-10</span><span class="p">,</span>
-        <span class="s2">"eps"</span><span class="p">:</span> <span class="mf">5e-4</span><span class="p">,</span>   <span class="c1"># slightly larger step helps with the noisier (c.2) objective</span>
+        <span class="s2">"gtol"</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="s2">"maxiter"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
         <span class="s2">"disp"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">)</span>
-
-<span class="n">time_c2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="n">time_opt_c2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="n">time_c2_total</span> <span class="o">=</span> <span class="n">time_precomp_c2</span> <span class="o">+</span> <span class="n">time_opt_c2</span>
 
 <span class="n">theta_c2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">res_c2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-<span class="n">V_c2</span> <span class="o">=</span> <span class="n">simulate_value_c2_fast</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">theta_c2</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta_c2</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-<span class="n">p1_c2</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">choice_prob_from_V_flat</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">theta_c2</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta_c2</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">V_c2</span><span class="p">)</span>
-<span class="n">ll_c2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N1_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p1_c2</span><span class="p">)</span> <span class="o">+</span> <span class="n">N0_vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">p1_c2</span><span class="p">))</span>
+<span class="n">obj_c2</span><span class="p">,</span> <span class="n">grad_c2</span><span class="p">,</span> <span class="n">p1_c2</span><span class="p">,</span> <span class="n">V_c2</span> <span class="o">=</span> <span class="n">sim_c2_objective_and_grad_eta</span><span class="p">(</span><span class="n">res_c2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="n">ll_c2</span> <span class="o">=</span> <span class="o">-</span><span class="n">obj_c2</span>
 
 <span class="c1"># Reports</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">============= Forward simulation (c.1) results ============="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">============= Revised forward simulation (c.1) results ============="</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"success                = </span><span class="si">{</span><span class="n">res_c1</span><span class="o">.</span><span class="n">success</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"message                = </span><span class="si">{</span><span class="n">res_c1</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"loglike                = </span><span class="si">{</span><span class="n">ll_c1</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"theta1_hat             = </span><span class="si">{</span><span class="n">theta_c1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"theta2_hat             = </span><span class="si">{</span><span class="n">theta_c1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"runtime_sec            = </span><span class="si">{</span><span class="n">time_c1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_precompute_sec    = </span><span class="si">{</span><span class="n">time_precomp_c1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_optimize_sec      = </span><span class="si">{</span><span class="n">time_opt_c1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"runtime_sec_total      = </span><span class="si">{</span><span class="n">time_c1_total</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Nsim                   = </span><span class="si">{</span><span class="n">Nsim_c1</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tsim                   = </span><span class="si">{</span><span class="n">Tsim</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">============= Forward simulation (c.2) results ============="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">============= Revised forward simulation (c.2) results ============="</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"success                = </span><span class="si">{</span><span class="n">res_c2</span><span class="o">.</span><span class="n">success</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"message                = </span><span class="si">{</span><span class="n">res_c2</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"loglike                = </span><span class="si">{</span><span class="n">ll_c2</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"theta1_hat             = </span><span class="si">{</span><span class="n">theta_c2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"theta2_hat             = </span><span class="si">{</span><span class="n">theta_c2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"runtime_sec            = </span><span class="si">{</span><span class="n">time_c2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_precompute_sec    = </span><span class="si">{</span><span class="n">time_precomp_c2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_optimize_sec      = </span><span class="si">{</span><span class="n">time_opt_c2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"runtime_sec_total      = </span><span class="si">{</span><span class="n">time_c2_total</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Nsim                   = </span><span class="si">{</span><span class="n">Nsim_c2</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tsim                   = </span><span class="si">{</span><span class="n">Tsim</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="c1"># Extend your summary table</span>
+<span class="c1"># Append revised part (c) results to summary_all</span>
 <span class="n">summary_part_c</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
     <span class="s2">"method"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Forward simulation (c.1)"</span><span class="p">,</span> <span class="s2">"Forward simulation (c.2)"</span><span class="p">],</span>
     <span class="s2">"theta1_hat"</span><span class="p">:</span> <span class="p">[</span><span class="n">theta_c1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">theta_c2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
@@ -15289,19 +15315,19 @@ $$<h3 id="Comparision-between-(C.-1)-and-(C.-2)$-methods:">Comparision between (
     <span class="s2">"rho1_hat"</span><span class="p">:</span> <span class="p">[</span><span class="n">rho1_hat</span><span class="p">,</span> <span class="n">rho1_hat</span><span class="p">],</span>
     <span class="s2">"sigma_rho_hat"</span><span class="p">:</span> <span class="p">[</span><span class="n">sigma_rho_hat</span><span class="p">,</span> <span class="n">sigma_rho_hat</span><span class="p">],</span>
     <span class="s2">"loglike"</span><span class="p">:</span> <span class="p">[</span><span class="n">ll_c1</span><span class="p">,</span> <span class="n">ll_c2</span><span class="p">],</span>
-    <span class="s2">"runtime_sec"</span><span class="p">:</span> <span class="p">[</span><span class="n">time_c1</span><span class="p">,</span> <span class="n">time_c2</span><span class="p">],</span>
+    <span class="s2">"runtime_sec"</span><span class="p">:</span> <span class="p">[</span><span class="n">time_c1_total</span><span class="p">,</span> <span class="n">time_c2_total</span><span class="p">],</span>
     <span class="s2">"state_space_S"</span><span class="p">:</span> <span class="p">[</span><span class="n">S</span><span class="p">,</span> <span class="n">S</span><span class="p">],</span>
 <span class="p">})</span>
 
 <span class="n">summary_all</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">summary</span><span class="p">,</span> <span class="n">summary_part_c</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">================ Updated summary table ================"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">================ Updated summary table with revised part (c) ================"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">summary_all</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">First 10 occupied-state model CCPs from forward simulation (c.1):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">First 10 occupied-state model CCPs from revised forward simulation (c.1):"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">p1_c1</span><span class="p">[</span><span class="n">occupied</span><span class="p">][:</span><span class="mi">10</span><span class="p">])</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">First 10 occupied-state model CCPs from forward simulation (c.2):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">First 10 occupied-state model CCPs from revised forward simulation (c.2):"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">p1_c2</span><span class="p">[</span><span class="n">occupied</span><span class="p">][:</span><span class="mi">10</span><span class="p">])</span>
 </pre></div>
 
@@ -15325,40 +15351,48 @@ $$<h3 id="Comparision-between-(C.-1)-and-(C.-2)$-methods:">Comparision between (
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>
-============= Forward simulation (c.1) results =============
+Precomputation for revised part (c):
+time_precomp_c1        = 0.0389
+time_precomp_c2        = 0.0880
+
+============= Revised forward simulation (c.1) results =============
 success                = True
-message                = CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_&lt;=_PGTOL
-loglike                = -33943.372177
-theta1_hat             = 0.408247
-theta2_hat             = 0.155114
-runtime_sec            = 1.5142
+message                = Optimization terminated successfully.
+loglike                = -33943.367452
+theta1_hat             = 0.408617
+theta2_hat             = 0.155240
+time_precompute_sec    = 0.0389
+time_optimize_sec      = 0.0012
+runtime_sec_total      = 0.0401
 Nsim                   = 100
 Tsim                   = 100
 
-============= Forward simulation (c.2) results =============
+============= Revised forward simulation (c.2) results =============
 success                = True
-message                = CONVERGENCE: REL_REDUCTION_OF_F_&lt;=_FACTR*EPSMCH
-loglike                = -34008.085682
-theta1_hat             = 0.408791
-theta2_hat             = 0.157501
-runtime_sec            = 14.5665
+message                = Optimization terminated successfully.
+loglike                = -34007.929680
+theta1_hat             = 0.411057
+theta2_hat             = 0.158263
+time_precompute_sec    = 0.0880
+time_optimize_sec      = 0.0008
+runtime_sec_total      = 0.0888
 Nsim                   = 200
 Tsim                   = 100
 
-================ Updated summary table ================
+================ Updated summary table with revised part (c) ================
                   method  theta1_hat  theta2_hat  rho0_hat  rho1_hat  sigma_rho_hat       loglike  runtime_sec  state_space_S
-                    NFXP    0.412523    0.156883   17.8269  0.624909       4.605933 -33941.542312     0.093020             56
-         Hotz-Miller MLE    0.411447    0.156677   17.8269  0.624909       4.605933 -33941.896863     0.001969             56
-Forward simulation (c.1)    0.408247    0.155114   17.8269  0.624909       4.605933 -33943.372177     1.514166             56
-Forward simulation (c.2)    0.408791    0.157501   17.8269  0.624909       4.605933 -34008.085682    14.566521             56
+                    NFXP    0.412523    0.156883   17.8269  0.624909       4.605933 -33941.542312     0.082240             56
+         Hotz-Miller MLE    0.411447    0.156677   17.8269  0.624909       4.605933 -33941.896863     0.001535             56
+Forward simulation (c.1)    0.408617    0.155240   17.8269  0.624909       4.605933 -33943.367452     0.040132             56
+Forward simulation (c.2)    0.411057    0.158263   17.8269  0.624909       4.605933 -34007.929680     0.088821             56
 
-First 10 occupied-state model CCPs from forward simulation (c.1):
-[0.03175942 0.01792444 0.010083   0.00566949 0.00319457 0.00180144
- 0.00101269 0.00056643 0.11340945 0.06933853]
+First 10 occupied-state model CCPs from revised forward simulation (c.1):
+[0.0316883  0.01787518 0.01005004 0.00564801 0.00318087 0.00179285
+ 0.00100739 0.0005632  0.11331042 0.06924616]
 
-First 10 occupied-state model CCPs from forward simulation (c.2):
-[0.03178736 0.01910532 0.0112187  0.00632253 0.00338069 0.00172146
- 0.00085425 0.00042673 0.13662734 0.08607872]
+First 10 occupied-state model CCPs from revised forward simulation (c.2):
+[0.03131684 0.01877038 0.0109925  0.00617823 0.00329412 0.00167239
+ 0.00082738 0.00041206 0.13584602 0.08537591]
 </pre>
 </div>
 </div>
@@ -15794,7 +15828,7 @@ Reduced-form RC estimates:
 rho0_hat               = 17.826900
 rho1_hat               = 0.624909
 sigma_rho_hat          = 4.605933
-runtime_sec            = 0.0005
+runtime_sec            = 0.0007
 
 Part (d) RC grid midpoints:
 [34.6 40.8 47.  53.2 59.4]
@@ -15804,7 +15838,7 @@ Total states            = 35
 Occupied states         = 35 out of 35
 
 Parametric CCP smoothing results:
-runtime_sec            = 0.0263
+runtime_sec            = 0.0176
 First 10 occupied-state smoothed CCPs:
 [0.02962737 0.01139535 0.00434986 0.00173373 0.00075591 0.09059053
  0.042051   0.018714   0.00846126 0.00409174]
@@ -15823,8 +15857,8 @@ theta1_hat             = 0.404680
 theta2_hat             = 0.154176
 coef_on_x              = -0.404680
 coef_on_rc             = 0.154176
-runtime_sec_reg        = 0.0021
-runtime_sec_total      = 0.0326
+runtime_sec_reg        = 0.0011
+runtime_sec_total      = 0.0225
 weighted_rmse          = 0.345944
 weighted_R2_uncentered = 0.996656
 
@@ -15834,11 +15868,11 @@ First 10 OLS dependent-variable rows Y(x,g,h):
 
 ================ Final summary table ================
                               method  theta1_hat  theta2_hat  rho0_hat  rho1_hat  sigma_rho_hat       loglike  runtime_sec  state_space_S
-                                NFXP    0.412523    0.156883   17.8269  0.624909       4.605933 -33941.542312     0.093020             56
-                     Hotz-Miller MLE    0.411447    0.156677   17.8269  0.624909       4.605933 -33941.896863     0.001969             56
-            Forward simulation (c.1)    0.408247    0.155114   17.8269  0.624909       4.605933 -33943.372177     1.514166             56
-            Forward simulation (c.2)    0.408791    0.157501   17.8269  0.624909       4.605933 -34008.085682    14.566521             56
-Linear regression (reduced-form WLS)    0.404680    0.154176   17.8269  0.624909       4.605933           NaN     0.032565             35
+                                NFXP    0.412523    0.156883   17.8269  0.624909       4.605933 -33941.542312     0.082240             56
+                     Hotz-Miller MLE    0.411447    0.156677   17.8269  0.624909       4.605933 -33941.896863     0.001535             56
+            Forward simulation (c.1)    0.408617    0.155240   17.8269  0.624909       4.605933 -33943.367452     0.040132             56
+            Forward simulation (c.2)    0.411057    0.158263   17.8269  0.624909       4.605933 -34007.929680     0.088821             56
+Linear regression (reduced-form WLS)    0.404680    0.154176   17.8269  0.624909       4.605933           NaN     0.022480             35
 </pre>
 </div>
 </div>
@@ -16292,32 +16326,32 @@ $$
 <pre>
 ================ Part (e) single-policy-only results ================
                                      method  theta1_hat  theta2_hat  criterion_value  runtime_sec  num_alt_policies  mean_violation  max_violation  num_violating_states  success
-       Ineq single: Alt 1: +0.10 everywhere    0.411447    0.156677              0.0     0.000660                 1             0.0            0.0                     0     True
-Ineq single: Alt 2: high-RC up, low-RC down    0.411447    0.156677              0.0     0.000488                 1             0.0            0.0                     0     True
-Ineq single: Alt 3: high-RC down, low-RC up    0.411447    0.156677              0.0     0.000407                 1             0.0            0.0                     0     True
-  Ineq single: Alt 4: high-x up, low-x down    0.411447    0.156677              0.0     0.000390                 1             0.0            0.0                     0     True
-  Ineq single: Alt 5: high-x down, low-x up    0.411447    0.156677              0.0     0.000389                 1             0.0            0.0                     0     True
+       Ineq single: Alt 1: +0.10 everywhere    0.411447    0.156677              0.0     0.000400                 1             0.0            0.0                     0     True
+Ineq single: Alt 2: high-RC up, low-RC down    0.411447    0.156677              0.0     0.000318                 1             0.0            0.0                     0     True
+Ineq single: Alt 3: high-RC down, low-RC up    0.411447    0.156677              0.0     0.000327                 1             0.0            0.0                     0     True
+  Ineq single: Alt 4: high-x up, low-x down    0.411447    0.156677              0.0     0.000232                 1             0.0            0.0                     0     True
+  Ineq single: Alt 5: high-x down, low-x up    0.411447    0.156677              0.0     0.000195                 1             0.0            0.0                     0     True
 
 ================ Part (e) single-policy diagnostics ================
                         policy  theta1_hat  theta2_hat  criterion_value  mean_violation  max_violation  num_violating_states  runtime_sec
-       Alt 1: +0.10 everywhere    0.411447    0.156677              0.0             0.0            0.0                     0     0.000660
-Alt 2: high-RC up, low-RC down    0.411447    0.156677              0.0             0.0            0.0                     0     0.000488
-Alt 3: high-RC down, low-RC up    0.411447    0.156677              0.0             0.0            0.0                     0     0.000407
-  Alt 4: high-x up, low-x down    0.411447    0.156677              0.0             0.0            0.0                     0     0.000390
-  Alt 5: high-x down, low-x up    0.411447    0.156677              0.0             0.0            0.0                     0     0.000389
+       Alt 1: +0.10 everywhere    0.411447    0.156677              0.0             0.0            0.0                     0     0.000400
+Alt 2: high-RC up, low-RC down    0.411447    0.156677              0.0             0.0            0.0                     0     0.000318
+Alt 3: high-RC down, low-RC up    0.411447    0.156677              0.0             0.0            0.0                     0     0.000327
+  Alt 4: high-x up, low-x down    0.411447    0.156677              0.0             0.0            0.0                     0     0.000232
+  Alt 5: high-x down, low-x up    0.411447    0.156677              0.0             0.0            0.0                     0     0.000195
 
 ================ Final summary table with single-policy part (e) ================
                                      method  theta1_hat  theta2_hat  rho0_hat  rho1_hat  sigma_rho_hat       loglike  runtime_sec  state_space_S  criterion_value  num_alt_policies
-                                       NFXP    0.412523    0.156883   17.8269  0.624909       4.605933 -33941.542312     0.093020             56              NaN               NaN
-                            Hotz-Miller MLE    0.411447    0.156677   17.8269  0.624909       4.605933 -33941.896863     0.001969             56              NaN               NaN
-                   Forward simulation (c.1)    0.408247    0.155114   17.8269  0.624909       4.605933 -33943.372177     1.514166             56              NaN               NaN
-                   Forward simulation (c.2)    0.408791    0.157501   17.8269  0.624909       4.605933 -34008.085682    14.566521             56              NaN               NaN
-       Linear regression (reduced-form WLS)    0.404680    0.154176   17.8269  0.624909       4.605933           NaN     0.032565             35              NaN               NaN
-       Ineq single: Alt 1: +0.10 everywhere    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000660             56              0.0               1.0
-Ineq single: Alt 2: high-RC up, low-RC down    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000488             56              0.0               1.0
-Ineq single: Alt 3: high-RC down, low-RC up    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000407             56              0.0               1.0
-  Ineq single: Alt 4: high-x up, low-x down    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000390             56              0.0               1.0
-  Ineq single: Alt 5: high-x down, low-x up    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000389             56              0.0               1.0
+                                       NFXP    0.412523    0.156883   17.8269  0.624909       4.605933 -33941.542312     0.082240             56              NaN               NaN
+                            Hotz-Miller MLE    0.411447    0.156677   17.8269  0.624909       4.605933 -33941.896863     0.001535             56              NaN               NaN
+                   Forward simulation (c.1)    0.408617    0.155240   17.8269  0.624909       4.605933 -33943.367452     0.040132             56              NaN               NaN
+                   Forward simulation (c.2)    0.411057    0.158263   17.8269  0.624909       4.605933 -34007.929680     0.088821             56              NaN               NaN
+       Linear regression (reduced-form WLS)    0.404680    0.154176   17.8269  0.624909       4.605933           NaN     0.022480             35              NaN               NaN
+       Ineq single: Alt 1: +0.10 everywhere    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000400             56              0.0               1.0
+Ineq single: Alt 2: high-RC up, low-RC down    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000318             56              0.0               1.0
+Ineq single: Alt 3: high-RC down, low-RC up    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000327             56              0.0               1.0
+  Ineq single: Alt 4: high-x up, low-x down    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000232             56              0.0               1.0
+  Ineq single: Alt 5: high-x down, low-x up    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000195             56              0.0               1.0
 </pre>
 </div>
 </div>
@@ -16420,6 +16454,679 @@ $$<p>Substitute back with $\delta_a$ then we can derive the result.</p>
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Appendix-B">Appendix B<a class="anchor-link" href="#Appendix-B">&#182;</a></h2><p>system information:</p>
+
+<pre><code>=== OS AND KERNEL ===
+PRETTY_NAME="Zorin OS 18"
+6.17.0-19-generic
+
+=== CPU TOPOLOGY &amp; CACHES ===
+CPU(s):                                  8
+Model name:                              11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz
+Thread(s) per core:                      2
+Core(s) per socket:                      4
+Socket(s):                               1
+L1d cache:                               192 KiB (4 instances)
+L1i cache:                               128 KiB (4 instances)
+L2 cache:                                5 MiB (4 instances)
+L3 cache:                                8 MiB (1 instance)
+NUMA node(s):                            1
+NUMA node0 CPU(s):                       0-7
+
+=== MEMORY (RAM) ===
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       6.8Gi       1.1Gi       659Mi       8.6Gi       8.5Gi
+Swap:          2.0Gi       852Ki       2.0Gi</code></pre>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Appendix-C">Appendix C<a class="anchor-link" href="#Appendix-C">&#182;</a></h2><p>This is the sample based estimation in the part (c. 1) and (c. 2).</p>
+<p>The two implementations that in the main writeup and the appendix use the same part-(c) estimator in spirit — both precompute the $\theta$-invariant simulation objects once and then optimize without resimulating — but they differ in the <strong>first-stage objects and therefore in the economic approximation they are using</strong>. The implementation above keeps the same first-stage structure as parts (a) and (b): it uses the AR(1)-implied discretized RC transition matrix $Q_{rc}$, the smoothed CCP $\hat P(a\mid s)$ on the $(x,rc)$ state grid, and the same structural state-transition matrices $F_0,F_1$, so it is internally consistent with the rest of the code and closer to a single coherent estimation framework. (This is the reason I list it in the main text, since the later code also inherent the same structure). By contrast, the version below changes the first stage to use the empirical RC-bin transition matrix computed directly from observed bin-to-bin moves and the <strong>raw clipped frequency CCP</strong> on the $(x,\text{RC-bin})$ grid, then applies the same precompute-once simulation trick. So the main difference is not the simulation shortcut, but that this version is a <strong>sample-replication implementation</strong>.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#   - empirical RC-bin transition matrix Pi</span>
+<span class="c1">#   - raw clipped frequency CCP on the (x, rc_bin) grid</span>
+<span class="c1">#   - one-time simulation precomputation outside the optimizer</span>
+<span class="c1">#   - Nelder-Mead optimization</span>
+<span class="c1">#</span>
+<span class="c1"># This is the right block if your goal is to reproduce the</span>
+<span class="c1"># Qc1_pv and Qc2_pv results as closely as possible.</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 0. Global constants for the sample-style part (c)</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="n">BETA_pv</span> <span class="o">=</span> <span class="n">beta</span>
+<span class="n">N_X_pv</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">N_RC_BINS_pv</span> <span class="o">=</span> <span class="n">K</span>           <span class="c1"># keep K = 8 to match your current setup and the sample notebook</span>
+<span class="n">S_pv</span> <span class="o">=</span> <span class="n">N_X_pv</span> <span class="o">*</span> <span class="n">N_RC_BINS_pv</span>
+<span class="n">GAMMA_pv</span> <span class="o">=</span> <span class="n">gamma_euler</span>
+
+<span class="c1"># Match notebook tuning</span>
+<span class="n">N_SIM_c1_pv</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">T_SIM_c1_pv</span> <span class="o">=</span> <span class="mi">120</span>
+<span class="n">SIM_SEED_c1_pv</span> <span class="o">=</span> <span class="mi">12345</span>
+
+<span class="n">N_SIM_c2_pv</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">T_SIM_c2_pv</span> <span class="o">=</span> <span class="mi">120</span>
+<span class="n">SIM_SEED_c2_pv</span> <span class="o">=</span> <span class="mi">24680</span>
+
+<span class="n">theta_init_pv</span> <span class="o">=</span> <span class="n">theta0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 1. Build the empirical RC bins and empirical RC transition matrix Pi</span>
+<span class="c1">#    This matches the notebook implementation, not your AR(1)-based Q_rc.</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="n">rc_min_pv</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"rc"</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+<span class="n">rc_max_pv</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"rc"</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+
+<span class="n">bin_edges_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">rc_min_pv</span><span class="p">,</span> <span class="n">rc_max_pv</span><span class="p">,</span> <span class="n">N_RC_BINS_pv</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">rc_grid_pv</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bin_edges_pv</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bin_edges_pv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+<span class="c1"># Assign each row to an RC bin (0-indexed), same logic as the notebook.</span>
+<span class="n">rc_bin_idx_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">bin_edges_pv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">df</span><span class="p">[</span><span class="s2">"rc"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">)</span>
+<span class="n">rc_bin_idx_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">rc_bin_idx_pv</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">N_RC_BINS_pv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+
+<span class="n">df_pv</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">df_pv</span><span class="p">[</span><span class="s2">"rc_bin_pv"</span><span class="p">]</span> <span class="o">=</span> <span class="n">rc_bin_idx_pv</span>
+<span class="n">df_pv</span><span class="p">[</span><span class="s2">"rc_mid_pv"</span><span class="p">]</span> <span class="o">=</span> <span class="n">rc_grid_pv</span><span class="p">[</span><span class="n">rc_bin_idx_pv</span><span class="p">]</span>
+
+<span class="c1"># Empirical RC transition matrix Pi from observed bin-to-bin transitions.</span>
+<span class="n">C_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_RC_BINS_pv</span><span class="p">,</span> <span class="n">N_RC_BINS_pv</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">df_pv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"i"</span><span class="p">):</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="s2">"rc_bin_pv"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j_from</span><span class="p">,</span> <span class="n">j_to</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+        <span class="n">C_pv</span><span class="p">[</span><span class="n">j_from</span><span class="p">,</span> <span class="n">j_to</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.0</span>
+
+<span class="n">Pi_pv</span> <span class="o">=</span> <span class="n">C_pv</span> <span class="o">/</span> <span class="n">C_pv</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Continuous AR(1) estimates are still reported for comparability.</span>
+<span class="c1"># Reuse your already-estimated rho0_hat, rho1_hat, sigma_rho_hat.</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 2. Build full state space and action-specific transitions TP0 / TP1</span>
+<span class="c1">#    This uses empirical Pi rather than your F0/F1 from Q_rc.</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="n">xi_of_s_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xi</span> <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_X_pv</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_RC_BINS_pv</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+<span class="n">j_of_s_pv</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">j</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_X_pv</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_RC_BINS_pv</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+
+<span class="n">x_of_s_pv</span> <span class="o">=</span> <span class="n">xi_of_s_pv</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">rc_of_s_pv</span> <span class="o">=</span> <span class="n">rc_grid_pv</span><span class="p">[</span><span class="n">j_of_s_pv</span><span class="p">]</span>
+
+<span class="n">xi_next_mnt_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">xi_of_s_pv</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N_X_pv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">xi_next_rep_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+
+<span class="n">TP0_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">S_pv</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="n">TP1_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">S_pv</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S_pv</span><span class="p">):</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">j_of_s_pv</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+
+    <span class="n">col0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xi_next_mnt_pv</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">*</span> <span class="n">N_RC_BINS_pv</span>
+    <span class="n">TP0_pv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">col0</span><span class="p">:</span><span class="n">col0</span> <span class="o">+</span> <span class="n">N_RC_BINS_pv</span><span class="p">]</span> <span class="o">=</span> <span class="n">Pi_pv</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="n">col1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xi_next_rep_pv</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">*</span> <span class="n">N_RC_BINS_pv</span>
+    <span class="n">TP1_pv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">col1</span><span class="p">:</span><span class="n">col1</span> <span class="o">+</span> <span class="n">N_RC_BINS_pv</span><span class="p">]</span> <span class="o">=</span> <span class="n">Pi_pv</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:]</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 3. State-level counts and raw clipped frequency CCP</span>
+<span class="c1">#    This matches the notebook implementation, not your smoothed CCP.</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="n">N1_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_X_pv</span><span class="p">,</span> <span class="n">N_RC_BINS_pv</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="n">N0_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_X_pv</span><span class="p">,</span> <span class="n">N_RC_BINS_pv</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">xi_obs</span><span class="p">,</span> <span class="n">j_obs</span><span class="p">,</span> <span class="n">a_obs</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="n">df_pv</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">df_pv</span><span class="p">[</span><span class="s2">"rc_bin_pv"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">),</span>
+    <span class="n">df_pv</span><span class="p">[</span><span class="s2">"a"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="n">a_obs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">N1_pv</span><span class="p">[</span><span class="n">xi_obs</span><span class="p">,</span> <span class="n">j_obs</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">N0_pv</span><span class="p">[</span><span class="n">xi_obs</span><span class="p">,</span> <span class="n">j_obs</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.0</span>
+
+<span class="n">N_total_pv</span> <span class="o">=</span> <span class="n">N0_pv</span> <span class="o">+</span> <span class="n">N1_pv</span>
+
+<span class="n">eps_ccp_pv</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">P1_hat_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">N_total_pv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">N1_pv</span> <span class="o">/</span> <span class="n">N_total_pv</span><span class="p">,</span> <span class="n">eps_ccp_pv</span><span class="p">)</span>
+<span class="n">P1_hat_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">P1_hat_pv</span><span class="p">,</span> <span class="n">eps_ccp_pv</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">eps_ccp_pv</span><span class="p">)</span>
+<span class="n">P0_hat_pv</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">P1_hat_pv</span>
+
+<span class="n">P1_flat_pv</span> <span class="o">=</span> <span class="n">P1_hat_pv</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="n">P0_flat_pv</span> <span class="o">=</span> <span class="n">P0_hat_pv</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="n">log_odds_flat_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P1_flat_pv</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P0_flat_pv</span><span class="p">)</span>
+
+<span class="n">occupied_pv</span> <span class="o">=</span> <span class="p">(</span><span class="n">N_total_pv</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 4. Common objects for simulation</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="n">discounts_c1_pv</span> <span class="o">=</span> <span class="n">BETA_pv</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">T_SIM_c1_pv</span><span class="p">)</span>
+<span class="n">discounts_c2_pv</span> <span class="o">=</span> <span class="n">BETA_pv</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">T_SIM_c2_pv</span><span class="p">)</span>
+
+<span class="n">cumTP0_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">TP0_pv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cumTP1_pv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">TP1_pv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cumTP0_pv</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">cumTP1_pv</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 5. Part (c.1): notebook-style precomputation</span>
+<span class="c1">#    V_hat(s;theta) = -theta1 * maint_component</span>
+<span class="c1">#                     -theta2 * repl_component</span>
+<span class="c1">#                     +corr_component</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="k">def</span> <span class="nf">simulate_value_components_c1_pv</span><span class="p">(</span>
+    <span class="n">P1_flat</span><span class="p">,</span>
+    <span class="n">P0_flat</span><span class="p">,</span>
+    <span class="n">x_of_s</span><span class="p">,</span>
+    <span class="n">rc_of_s</span><span class="p">,</span>
+    <span class="n">cumTP0</span><span class="p">,</span>
+    <span class="n">cumTP1</span><span class="p">,</span>
+    <span class="n">n_sim</span><span class="o">=</span><span class="n">N_SIM_c1_pv</span><span class="p">,</span>
+    <span class="n">t_sim</span><span class="o">=</span><span class="n">T_SIM_c1_pv</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">SIM_SEED_c1_pv</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+    <span class="n">maint_component</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">repl_component</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">corr_component</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">s0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S_pv</span><span class="p">):</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">n_sim</span><span class="p">,</span> <span class="n">s0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="n">maint_acc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_sim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">repl_acc</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_sim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">corr_acc</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_sim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t_sim</span><span class="p">):</span>
+            <span class="n">beta_tau</span> <span class="o">=</span> <span class="n">discounts_c1_pv</span><span class="p">[</span><span class="n">tau</span><span class="p">]</span>
+
+            <span class="n">p1</span> <span class="o">=</span> <span class="n">P1_flat</span><span class="p">[</span><span class="n">states</span><span class="p">]</span>
+            <span class="n">p0</span> <span class="o">=</span> <span class="n">P0_flat</span><span class="p">[</span><span class="n">states</span><span class="p">]</span>
+
+            <span class="n">u_action</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_sim</span><span class="p">)</span>
+            <span class="n">a1</span> <span class="o">=</span> <span class="n">u_action</span> <span class="o">&lt;</span> <span class="n">p1</span>
+            <span class="n">a0</span> <span class="o">=</span> <span class="o">~</span><span class="n">a1</span>
+
+            <span class="n">p_selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p0</span><span class="p">)</span>
+
+            <span class="n">maint_acc</span> <span class="o">+=</span> <span class="n">beta_tau</span> <span class="o">*</span> <span class="n">x_of_s</span><span class="p">[</span><span class="n">states</span><span class="p">]</span> <span class="o">*</span> <span class="n">a0</span>
+            <span class="n">repl_acc</span>  <span class="o">+=</span> <span class="n">beta_tau</span> <span class="o">*</span> <span class="n">rc_of_s</span><span class="p">[</span><span class="n">states</span><span class="p">]</span> <span class="o">*</span> <span class="n">a1</span>
+            <span class="n">corr_acc</span>  <span class="o">+=</span> <span class="n">beta_tau</span> <span class="o">*</span> <span class="p">(</span><span class="n">GAMMA_pv</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_selected</span><span class="p">))</span>
+
+            <span class="n">u_next</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_sim</span><span class="p">)</span>
+            <span class="n">cdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a1</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">cumTP1</span><span class="p">[</span><span class="n">states</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cumTP0</span><span class="p">[</span><span class="n">states</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">next_states</span> <span class="o">=</span> <span class="p">(</span><span class="n">u_next</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cdf</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">next_states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">next_states</span><span class="p">,</span> <span class="n">S_pv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">states</span> <span class="o">=</span> <span class="n">next_states</span>
+
+        <span class="n">maint_component</span><span class="p">[</span><span class="n">s0</span><span class="p">]</span> <span class="o">=</span> <span class="n">maint_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">repl_component</span><span class="p">[</span><span class="n">s0</span><span class="p">]</span>  <span class="o">=</span> <span class="n">repl_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">corr_component</span><span class="p">[</span><span class="n">s0</span><span class="p">]</span>  <span class="o">=</span> <span class="n">corr_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">maint_component</span><span class="p">,</span> <span class="n">repl_component</span><span class="p">,</span> <span class="n">corr_component</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">maint_component_c1_pv</span><span class="p">,</span> <span class="n">repl_component_c1_pv</span><span class="p">,</span> <span class="n">corr_component_c1_pv</span> <span class="o">=</span> <span class="n">simulate_value_components_c1_pv</span><span class="p">(</span>
+    <span class="n">P1_flat</span><span class="o">=</span><span class="n">P1_flat_pv</span><span class="p">,</span>
+    <span class="n">P0_flat</span><span class="o">=</span><span class="n">P0_flat_pv</span><span class="p">,</span>
+    <span class="n">x_of_s</span><span class="o">=</span><span class="n">x_of_s_pv</span><span class="p">,</span>
+    <span class="n">rc_of_s</span><span class="o">=</span><span class="n">rc_of_s_pv</span><span class="p">,</span>
+    <span class="n">cumTP0</span><span class="o">=</span><span class="n">cumTP0_pv</span><span class="p">,</span>
+    <span class="n">cumTP1</span><span class="o">=</span><span class="n">cumTP1_pv</span><span class="p">,</span>
+    <span class="n">n_sim</span><span class="o">=</span><span class="n">N_SIM_c1_pv</span><span class="p">,</span>
+    <span class="n">t_sim</span><span class="o">=</span><span class="n">T_SIM_c1_pv</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">SIM_SEED_c1_pv</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">time_precompute_c1_pv</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+
+<span class="k">def</span> <span class="nf">simulated_value_c1_pv</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">theta1</span> <span class="o">*</span> <span class="n">maint_component_c1_pv</span> <span class="o">-</span> <span class="n">theta2</span> <span class="o">*</span> <span class="n">repl_component_c1_pv</span> <span class="o">+</span> <span class="n">corr_component_c1_pv</span>
+
+<span class="k">def</span> <span class="nf">model_ccp_c1_pv</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
+    <span class="n">V_hat</span> <span class="o">=</span> <span class="n">simulated_value_c1_pv</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">)</span>
+
+    <span class="n">EV0</span> <span class="o">=</span> <span class="n">TP0_pv</span> <span class="o">@</span> <span class="n">V_hat</span>
+    <span class="n">EV1</span> <span class="o">=</span> <span class="n">TP1_pv</span> <span class="o">@</span> <span class="n">V_hat</span>
+
+    <span class="n">delta0</span> <span class="o">=</span> <span class="o">-</span><span class="n">theta1</span> <span class="o">*</span> <span class="n">x_of_s_pv</span> <span class="o">+</span> <span class="n">BETA_pv</span> <span class="o">*</span> <span class="n">EV0</span>
+    <span class="n">delta1</span> <span class="o">=</span> <span class="o">-</span><span class="n">theta2</span> <span class="o">*</span> <span class="n">rc_of_s_pv</span> <span class="o">+</span> <span class="n">BETA_pv</span> <span class="o">*</span> <span class="n">EV1</span>
+
+    <span class="n">dmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">delta0</span><span class="p">,</span> <span class="n">delta1</span><span class="p">)</span>
+    <span class="n">exp0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">delta0</span> <span class="o">-</span> <span class="n">dmax</span><span class="p">)</span>
+    <span class="n">exp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">delta1</span> <span class="o">-</span> <span class="n">dmax</span><span class="p">)</span>
+    <span class="n">P1_model</span> <span class="o">=</span> <span class="n">exp1</span> <span class="o">/</span> <span class="p">(</span><span class="n">exp0</span> <span class="o">+</span> <span class="n">exp1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">V_hat</span><span class="p">,</span> <span class="n">P1_model</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N_X_pv</span><span class="p">,</span> <span class="n">N_RC_BINS_pv</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">neg_log_likelihood_c1_pv</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+    <span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span> <span class="o">=</span> <span class="n">params</span>
+    <span class="k">if</span> <span class="n">theta1</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">theta2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">1e10</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">P1_model</span> <span class="o">=</span> <span class="n">model_ccp_c1_pv</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">)</span>
+    <span class="n">P0_model</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">P1_model</span>
+
+    <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-12</span>
+    <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N1_pv</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P1_model</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span> <span class="o">+</span> <span class="n">N0_pv</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P0_model</span> <span class="o">+</span> <span class="n">eps</span><span class="p">))</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">ll</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- Part (c.1) sample-style forward simulation ---"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial theta = </span><span class="si">{</span><span class="n">theta_init_pv</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial NLL   = </span><span class="si">{</span><span class="n">neg_log_likelihood_c1_pv</span><span class="p">(</span><span class="n">theta_init_pv</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">result_c1_pv</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+    <span class="n">neg_log_likelihood_c1_pv</span><span class="p">,</span>
+    <span class="n">theta_init_pv</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"Nelder-Mead"</span><span class="p">,</span>
+    <span class="n">options</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">xatol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">fatol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">time_opt_c1_pv</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="n">time_total_c1_pv</span> <span class="o">=</span> <span class="n">time_precompute_c1_pv</span> <span class="o">+</span> <span class="n">time_opt_c1_pv</span>
+
+<span class="n">theta1_c1_pv</span><span class="p">,</span> <span class="n">theta2_c1_pv</span> <span class="o">=</span> <span class="n">result_c1_pv</span><span class="o">.</span><span class="n">x</span>
+<span class="n">V_hat_c1_pv</span><span class="p">,</span> <span class="n">P1_final_c1_pv</span> <span class="o">=</span> <span class="n">model_ccp_c1_pv</span><span class="p">(</span><span class="n">theta1_c1_pv</span><span class="p">,</span> <span class="n">theta2_c1_pv</span><span class="p">)</span>
+<span class="n">ll_c1_pv</span> <span class="o">=</span> <span class="o">-</span><span class="n">result_c1_pv</span><span class="o">.</span><span class="n">fun</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">============= Sample-style forward simulation (c.1) results ============="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"theta1_hat             = </span><span class="si">{</span><span class="n">theta1_c1_pv</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"theta2_hat             = </span><span class="si">{</span><span class="n">theta2_c1_pv</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"loglike                = </span><span class="si">{</span><span class="n">ll_c1_pv</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"converged              = </span><span class="si">{</span><span class="n">result_c1_pv</span><span class="o">.</span><span class="n">success</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"optimizer_iterations   = </span><span class="si">{</span><span class="n">result_c1_pv</span><span class="o">.</span><span class="n">nit</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_precompute_sec    = </span><span class="si">{</span><span class="n">time_precompute_c1_pv</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_optimize_sec      = </span><span class="si">{</span><span class="n">time_opt_c1_pv</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"runtime_sec_total      = </span><span class="si">{</span><span class="n">time_total_c1_pv</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 6. Part (c.2): notebook-style precomputation</span>
+<span class="c1">#    V_hat(s;theta) = -theta1 * maint_component</span>
+<span class="c1">#                     -theta2 * repl_component</span>
+<span class="c1">#                     +shock_component</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="k">def</span> <span class="nf">simulate_value_components_c2_pv</span><span class="p">():</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">SIM_SEED_c2_pv</span><span class="p">)</span>
+
+    <span class="n">maint_component</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">repl_component</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">shock_component</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">s0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S_pv</span><span class="p">):</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">N_SIM_c2_pv</span><span class="p">,</span> <span class="n">s0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="n">maint_acc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N_SIM_c2_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">repl_acc</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N_SIM_c2_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">shock_acc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N_SIM_c2_pv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T_SIM_c2_pv</span><span class="p">):</span>
+            <span class="n">beta_tau</span> <span class="o">=</span> <span class="n">discounts_c2_pv</span><span class="p">[</span><span class="n">tau</span><span class="p">]</span>
+
+            <span class="n">eps0</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">gumbel</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">N_SIM_c2_pv</span><span class="p">)</span>
+            <span class="n">eps1</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">gumbel</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">N_SIM_c2_pv</span><span class="p">)</span>
+
+            <span class="n">log_odds</span> <span class="o">=</span> <span class="n">log_odds_flat_pv</span><span class="p">[</span><span class="n">states</span><span class="p">]</span>
+            <span class="n">a1</span> <span class="o">=</span> <span class="p">(</span><span class="n">log_odds</span> <span class="o">+</span> <span class="n">eps1</span> <span class="o">-</span> <span class="n">eps0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+            <span class="n">a0</span> <span class="o">=</span> <span class="o">~</span><span class="n">a1</span>
+
+            <span class="n">maint_acc</span> <span class="o">+=</span> <span class="n">beta_tau</span> <span class="o">*</span> <span class="n">x_of_s_pv</span><span class="p">[</span><span class="n">states</span><span class="p">]</span> <span class="o">*</span> <span class="n">a0</span>
+            <span class="n">repl_acc</span>  <span class="o">+=</span> <span class="n">beta_tau</span> <span class="o">*</span> <span class="n">rc_of_s_pv</span><span class="p">[</span><span class="n">states</span><span class="p">]</span> <span class="o">*</span> <span class="n">a1</span>
+            <span class="n">shock_acc</span> <span class="o">+=</span> <span class="n">beta_tau</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">eps1</span><span class="p">,</span> <span class="n">eps0</span><span class="p">)</span>
+
+            <span class="n">u_next</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N_SIM_c2_pv</span><span class="p">)</span>
+            <span class="n">cdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a1</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">cumTP1_pv</span><span class="p">[</span><span class="n">states</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cumTP0_pv</span><span class="p">[</span><span class="n">states</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">next_states</span> <span class="o">=</span> <span class="p">(</span><span class="n">u_next</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cdf</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">next_states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">next_states</span><span class="p">,</span> <span class="n">S_pv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">states</span> <span class="o">=</span> <span class="n">next_states</span>
+
+        <span class="n">maint_component</span><span class="p">[</span><span class="n">s0</span><span class="p">]</span> <span class="o">=</span> <span class="n">maint_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">repl_component</span><span class="p">[</span><span class="n">s0</span><span class="p">]</span>  <span class="o">=</span> <span class="n">repl_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">shock_component</span><span class="p">[</span><span class="n">s0</span><span class="p">]</span> <span class="o">=</span> <span class="n">shock_acc</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">maint_component</span><span class="p">,</span> <span class="n">repl_component</span><span class="p">,</span> <span class="n">shock_component</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">maint_component_c2_pv</span><span class="p">,</span> <span class="n">repl_component_c2_pv</span><span class="p">,</span> <span class="n">shock_component_c2_pv</span> <span class="o">=</span> <span class="n">simulate_value_components_c2_pv</span><span class="p">()</span>
+<span class="n">time_precompute_c2_pv</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+
+<span class="k">def</span> <span class="nf">simulated_value_c2_pv</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">theta1</span> <span class="o">*</span> <span class="n">maint_component_c2_pv</span> <span class="o">-</span> <span class="n">theta2</span> <span class="o">*</span> <span class="n">repl_component_c2_pv</span> <span class="o">+</span> <span class="n">shock_component_c2_pv</span>
+
+<span class="k">def</span> <span class="nf">model_ccp_c2_pv</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">):</span>
+    <span class="n">V_hat</span> <span class="o">=</span> <span class="n">simulated_value_c2_pv</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">)</span>
+
+    <span class="n">EV0</span> <span class="o">=</span> <span class="n">TP0_pv</span> <span class="o">@</span> <span class="n">V_hat</span>
+    <span class="n">EV1</span> <span class="o">=</span> <span class="n">TP1_pv</span> <span class="o">@</span> <span class="n">V_hat</span>
+
+    <span class="n">delta0</span> <span class="o">=</span> <span class="o">-</span><span class="n">theta1</span> <span class="o">*</span> <span class="n">x_of_s_pv</span> <span class="o">+</span> <span class="n">BETA_pv</span> <span class="o">*</span> <span class="n">EV0</span>
+    <span class="n">delta1</span> <span class="o">=</span> <span class="o">-</span><span class="n">theta2</span> <span class="o">*</span> <span class="n">rc_of_s_pv</span> <span class="o">+</span> <span class="n">BETA_pv</span> <span class="o">*</span> <span class="n">EV1</span>
+
+    <span class="n">dmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">delta0</span><span class="p">,</span> <span class="n">delta1</span><span class="p">)</span>
+    <span class="n">exp0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">delta0</span> <span class="o">-</span> <span class="n">dmax</span><span class="p">)</span>
+    <span class="n">exp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">delta1</span> <span class="o">-</span> <span class="n">dmax</span><span class="p">)</span>
+    <span class="n">P1_model</span> <span class="o">=</span> <span class="n">exp1</span> <span class="o">/</span> <span class="p">(</span><span class="n">exp0</span> <span class="o">+</span> <span class="n">exp1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">V_hat</span><span class="p">,</span> <span class="n">P1_model</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N_X_pv</span><span class="p">,</span> <span class="n">N_RC_BINS_pv</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">neg_log_likelihood_c2_pv</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+    <span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span> <span class="o">=</span> <span class="n">params</span>
+    <span class="k">if</span> <span class="n">theta1</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">theta2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">1e10</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">P1_model</span> <span class="o">=</span> <span class="n">model_ccp_c2_pv</span><span class="p">(</span><span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span><span class="p">)</span>
+    <span class="n">P0_model</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">P1_model</span>
+
+    <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-12</span>
+    <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N1_pv</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P1_model</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span> <span class="o">+</span> <span class="n">N0_pv</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P0_model</span> <span class="o">+</span> <span class="n">eps</span><span class="p">))</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">ll</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- Part (c.2) sample-style forward simulation ---"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial theta = </span><span class="si">{</span><span class="n">theta_init_pv</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial NLL   = </span><span class="si">{</span><span class="n">neg_log_likelihood_c2_pv</span><span class="p">(</span><span class="n">theta_init_pv</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">result_c2_pv</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span>
+    <span class="n">neg_log_likelihood_c2_pv</span><span class="p">,</span>
+    <span class="n">theta_init_pv</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"Nelder-Mead"</span><span class="p">,</span>
+    <span class="n">options</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">xatol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">fatol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">time_opt_c2_pv</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+<span class="n">time_total_c2_pv</span> <span class="o">=</span> <span class="n">time_precompute_c2_pv</span> <span class="o">+</span> <span class="n">time_opt_c2_pv</span>
+
+<span class="n">theta1_c2_pv</span><span class="p">,</span> <span class="n">theta2_c2_pv</span> <span class="o">=</span> <span class="n">result_c2_pv</span><span class="o">.</span><span class="n">x</span>
+<span class="n">V_hat_c2_pv</span><span class="p">,</span> <span class="n">P1_final_c2_pv</span> <span class="o">=</span> <span class="n">model_ccp_c2_pv</span><span class="p">(</span><span class="n">theta1_c2_pv</span><span class="p">,</span> <span class="n">theta2_c2_pv</span><span class="p">)</span>
+<span class="n">ll_c2_pv</span> <span class="o">=</span> <span class="o">-</span><span class="n">result_c2_pv</span><span class="o">.</span><span class="n">fun</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">============= Sample-style forward simulation (c.2) results ============="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"theta1_hat             = </span><span class="si">{</span><span class="n">theta1_c2_pv</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"theta2_hat             = </span><span class="si">{</span><span class="n">theta2_c2_pv</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"loglike                = </span><span class="si">{</span><span class="n">ll_c2_pv</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"converged              = </span><span class="si">{</span><span class="n">result_c2_pv</span><span class="o">.</span><span class="n">success</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"optimizer_iterations   = </span><span class="si">{</span><span class="n">result_c2_pv</span><span class="o">.</span><span class="n">nit</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_precompute_sec    = </span><span class="si">{</span><span class="n">time_precompute_c2_pv</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"time_optimize_sec      = </span><span class="si">{</span><span class="n">time_opt_c2_pv</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"runtime_sec_total      = </span><span class="si">{</span><span class="n">time_total_c2_pv</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 7. Append notebook-style part (c) results to your summary table</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="n">summary_part_c_pv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"method"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Forward simulation (c.1) sample-style"</span><span class="p">,</span> <span class="s2">"Forward simulation (c.2) sample-style"</span><span class="p">],</span>
+    <span class="s2">"theta1_hat"</span><span class="p">:</span> <span class="p">[</span><span class="n">theta1_c1_pv</span><span class="p">,</span> <span class="n">theta1_c2_pv</span><span class="p">],</span>
+    <span class="s2">"theta2_hat"</span><span class="p">:</span> <span class="p">[</span><span class="n">theta2_c1_pv</span><span class="p">,</span> <span class="n">theta2_c2_pv</span><span class="p">],</span>
+    <span class="s2">"rho0_hat"</span><span class="p">:</span> <span class="p">[</span><span class="n">rho0_hat</span><span class="p">,</span> <span class="n">rho0_hat</span><span class="p">],</span>
+    <span class="s2">"rho1_hat"</span><span class="p">:</span> <span class="p">[</span><span class="n">rho1_hat</span><span class="p">,</span> <span class="n">rho1_hat</span><span class="p">],</span>
+    <span class="s2">"sigma_rho_hat"</span><span class="p">:</span> <span class="p">[</span><span class="n">sigma_rho_hat</span><span class="p">,</span> <span class="n">sigma_rho_hat</span><span class="p">],</span>
+    <span class="s2">"loglike"</span><span class="p">:</span> <span class="p">[</span><span class="n">ll_c1_pv</span><span class="p">,</span> <span class="n">ll_c2_pv</span><span class="p">],</span>
+    <span class="s2">"runtime_sec"</span><span class="p">:</span> <span class="p">[</span><span class="n">time_total_c1_pv</span><span class="p">,</span> <span class="n">time_total_c2_pv</span><span class="p">],</span>
+    <span class="s2">"state_space_S"</span><span class="p">:</span> <span class="p">[</span><span class="n">S_pv</span><span class="p">,</span> <span class="n">S_pv</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="k">if</span> <span class="s2">"summary_all"</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+    <span class="c1"># avoid duplicate rows if you rerun the cell</span>
+    <span class="n">summary_all</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">summary_all</span><span class="p">,</span> <span class="n">summary_part_c_pv</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">elif</span> <span class="s2">"summary"</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+    <span class="n">summary_all</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">summary</span><span class="p">,</span> <span class="n">summary_part_c_pv</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">summary_all</span> <span class="o">=</span> <span class="n">summary_part_c_pv</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">================ Summary table with sample-style part (c) ================"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">summary_all</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">First 10 occupied-state notebook-style CCPs:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">P1_flat_pv</span><span class="p">[</span><span class="n">occupied_pv</span><span class="p">][:</span><span class="mi">10</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">First 10 occupied-state model CCPs from sample-style (c.1):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">P1_final_c1_pv</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">occupied_pv</span><span class="p">][:</span><span class="mi">10</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">First 10 occupied-state model CCPs from sample-style (c.2):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">P1_final_c2_pv</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">occupied_pv</span><span class="p">][:</span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>
+--- Part (c.1) sample-style forward simulation ---
+Initial theta = [0.3  0.35]
+Initial NLL   = 86406.060751
+
+============= Sample-style forward simulation (c.1) results =============
+theta1_hat             = 0.395534
+theta2_hat             = 0.153706
+loglike                = -34001.052261
+converged              = True
+optimizer_iterations   = 66
+time_precompute_sec    = 0.2837
+time_optimize_sec      = 0.0055
+runtime_sec_total      = 0.2892
+
+--- Part (c.2) sample-style forward simulation ---
+Initial theta = [0.3  0.35]
+Initial NLL   = 82597.238441
+
+============= Sample-style forward simulation (c.2) results =============
+theta1_hat             = 0.389652
+theta2_hat             = 0.153694
+loglike                = -34408.221935
+converged              = True
+optimizer_iterations   = 67
+time_precompute_sec    = 0.3152
+time_optimize_sec      = 0.0053
+runtime_sec_total      = 0.3205
+
+================ Summary table with sample-style part (c) ================
+                                     method  theta1_hat  theta2_hat  rho0_hat  rho1_hat  sigma_rho_hat       loglike  runtime_sec  state_space_S  criterion_value  num_alt_policies
+                                       NFXP    0.412523    0.156883   17.8269  0.624909       4.605933 -33941.542312     0.082240             56              NaN               NaN
+                            Hotz-Miller MLE    0.411447    0.156677   17.8269  0.624909       4.605933 -33941.896863     0.001535             56              NaN               NaN
+                   Forward simulation (c.1)    0.408617    0.155240   17.8269  0.624909       4.605933 -33943.367452     0.040132             56              NaN               NaN
+                   Forward simulation (c.2)    0.411057    0.158263   17.8269  0.624909       4.605933 -34007.929680     0.088821             56              NaN               NaN
+       Linear regression (reduced-form WLS)    0.404680    0.154176   17.8269  0.624909       4.605933           NaN     0.022480             35              NaN               NaN
+       Ineq single: Alt 1: +0.10 everywhere    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000400             56              0.0               1.0
+Ineq single: Alt 2: high-RC up, low-RC down    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000318             56              0.0               1.0
+Ineq single: Alt 3: high-RC down, low-RC up    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000327             56              0.0               1.0
+  Ineq single: Alt 4: high-x up, low-x down    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000232             56              0.0               1.0
+  Ineq single: Alt 5: high-x down, low-x up    0.411447    0.156677   17.8269  0.624909       4.605933           NaN     0.000195             56              0.0               1.0
+      Forward simulation (c.1) sample-style    0.395534    0.153706   17.8269  0.624909       4.605933 -34001.052261     0.289190             56              NaN               NaN
+      Forward simulation (c.2) sample-style    0.389652    0.153694   17.8269  0.624909       4.605933 -34408.221935     0.320497             56              NaN               NaN
+
+First 10 occupied-state notebook-style CCPs:
+[2.84900285e-02 1.93765796e-02 9.29487179e-03 5.36978277e-03
+ 3.65230095e-03 2.49376559e-03 1.00000000e-06 1.00000000e-06
+ 7.76340111e-02 6.64023786e-02]
+
+First 10 occupied-state model CCPs from sample-style (c.1):
+[0.0280787  0.01671116 0.00941683 0.00586964 0.00326632 0.00189347
+ 0.00102983 0.00061493 0.09076108 0.05708764]
+
+First 10 occupied-state model CCPs from sample-style (c.2):
+[0.02036461 0.00970453 0.01039406 0.0059011  0.00314511 0.0016803
+ 0.00088956 0.00037213 0.10873685 0.05377112]
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Appendix-D">Appendix D<a class="anchor-link" href="#Appendix-D">&#182;</a></h2><p>The Tauchen's implementation</p>
+<p>Start from
+$$
+RC_t = \rho_0 + \rho_1 RC_{t-1} + e_t, \qquad e_t \sim N(0, \sigma_\rho^2),
+$$
+with $|\rho_1| &lt; 1$. The stationary mean and stationary standard deviation are
+$$
+\mu_{RC} = \frac{\rho_0}{1-\rho_1}, \qquad \sigma_{RC,\infty} = \frac{\sigma_\rho}{\sqrt{1-\rho_1^2}}.
+$$</p>
+<p>Tauchen chooses $G$ grid points for $RC$ centered around the stationary mean:
+$$
+r^1, \dots, r^G, \qquad r^g \in \left[\mu_{RC} - m\sigma_{RC,\infty}, \ \mu_{RC} + m\sigma_{RC,\infty}\right],
+$$
+typically with $m = 3$. If the grid is equally spaced, then
+$$
+\Delta = \frac{2m\sigma_{RC,\infty}}{G-1}, \qquad r^g = \mu_{RC} - m\sigma_{RC,\infty} + (g-1)\Delta.
+$$</p>
+<p>Given the current node $r^g$, the conditional mean of next period’s replacement cost is
+$$
+\mu_g = \rho_0 + \rho_1 r^g.
+$$</p>
+<p>Then Tauchen defines the discrete transition matrix $Q = [Q_{gh}]_{g,h=1}^G$ by assigning probability mass to each grid cell:
+$$
+Q_{g1} = \Phi\left(\frac{r^1 - \mu_g + \Delta/2}{\sigma_\rho}\right),
+$$
+$$
+Q_{gh} = \Phi\left(\frac{r^h - \mu_g + \Delta/2}{\sigma_\rho}\right) - \Phi\left(\frac{r^h - \mu_g - \Delta/2}{\sigma_\rho}\right), \qquad h=2,\dots,G-1,
+$$
+$$
+Q_{gG} = 1 - \Phi\left(\frac{r^G - \mu_g - \Delta/2}{\sigma_\rho}\right).
+$$</p>
+<p>So $Q_{gh}$ is the probability that $RC_{t+1}$ moves from current grid point $r^g$ into the $h$-th grid cell.</p>
+<p>Once $Q$ is constructed, the mileage transition is the same as before:
+$$
+x' =
+\begin{cases}
+1, &amp; a=1, \\
+\min(x+1,7), &amp; a=0.
+\end{cases}
+$$</p>
+<p>Hence the full transition matrices become
+$$
+F_0 = M_0 \otimes Q, \qquad F_1 = M_1 \otimes Q.
+$$</p>
+<p>At that point, part (a) proceeds exactly as before: use $F_0$ and $F_1$ inside the Bellman operator, solve the fixed point for each trial $\theta$, compute CCPs, and maximize the state-level likelihood. So Tauchen only changes the way the exogenous $RC$ process is discretized; it does not change the NFXP logic itself.</p>
+<p>The code below is an implementation demo and it does not produce the same result but the key detailed can be found in the github repository</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">ndtr</span>
+
+
+<span class="k">def</span> <span class="nf">tauchen_rc_transition</span><span class="p">(</span>
+    <span class="n">rho0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">rho1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">sigma_rho</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">G</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">m</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Tauchen discretization for</span>
+<span class="sd">        RC_t = rho0 + rho1 * RC_{t-1} + e_t,   e_t ~ N(0, sigma_rho^2)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rc_grid : ndarray, shape (G,)</span>
+<span class="sd">        Tauchen grid for replacement cost.</span>
+<span class="sd">    Q : ndarray, shape (G, G)</span>
+<span class="sd">        Markov transition matrix on the Tauchen grid.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">G</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"G must be at least 2."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sigma_rho</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"sigma_rho must be positive."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">rho1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Tauchen assumes |rho1| &lt; 1 for stationarity."</span><span class="p">)</span>
+
+    <span class="c1"># Stationary mean and standard deviation</span>
+    <span class="n">mu_rc</span> <span class="o">=</span> <span class="n">rho0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">rho1</span><span class="p">)</span>
+    <span class="n">sigma_rc_stat</span> <span class="o">=</span> <span class="n">sigma_rho</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">rho1</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Equally spaced Tauchen grid</span>
+    <span class="n">rc_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+        <span class="n">mu_rc</span> <span class="o">-</span> <span class="n">m</span> <span class="o">*</span> <span class="n">sigma_rc_stat</span><span class="p">,</span>
+        <span class="n">mu_rc</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">sigma_rc_stat</span><span class="p">,</span>
+        <span class="n">G</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">rc_grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rc_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">G</span><span class="p">,</span> <span class="n">G</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+        <span class="n">mean_next</span> <span class="o">=</span> <span class="n">rho0</span> <span class="o">+</span> <span class="n">rho1</span> <span class="o">*</span> <span class="n">rc_grid</span><span class="p">[</span><span class="n">g</span><span class="p">]</span>
+
+        <span class="c1"># Left tail</span>
+        <span class="n">Q</span><span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ndtr</span><span class="p">((</span><span class="n">rc_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean_next</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma_rho</span><span class="p">)</span>
+
+        <span class="c1"># Interior bins</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">G</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">upper</span> <span class="o">=</span> <span class="p">(</span><span class="n">rc_grid</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean_next</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma_rho</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="p">(</span><span class="n">rc_grid</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean_next</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma_rho</span>
+            <span class="n">Q</span><span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">ndtr</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span> <span class="o">-</span> <span class="n">ndtr</span><span class="p">(</span><span class="n">lower</span><span class="p">)</span>
+
+        <span class="c1"># Right tail</span>
+        <span class="n">Q</span><span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="n">G</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">ndtr</span><span class="p">((</span><span class="n">rc_grid</span><span class="p">[</span><span class="n">G</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean_next</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma_rho</span><span class="p">)</span>
+
+    <span class="c1"># Numerical guard</span>
+    <span class="n">Q</span> <span class="o">/=</span> <span class="n">Q</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rc_grid</span><span class="p">,</span> <span class="n">Q</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
 </div>
 </body>
 
